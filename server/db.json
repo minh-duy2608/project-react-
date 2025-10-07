@@ -1,0 +1,87 @@
+{
+  "admin": {
+    "username": "duy268",
+    "password": "123456"
+  },
+  "users": [
+    {
+      "username": "duy268",
+      "password": "minhduy268",
+      "id": 1
+    }
+  ],
+  "profiles": [
+    {
+      "id": 1,
+      "name": "Nguyễn Văn A",
+      "email": "nguyenvana@gmail.com",
+      "phone": "0987654321",
+      "gender": "Female",
+      "status": "Active"
+    },
+    {
+      "id": 2,
+      "name": "Phạm Thị B",
+      "email": "phamthib@gmail.com",
+      "phone": "0987654321",
+      "gender": "Male",
+      "status": "Deactivate"
+    },
+    {
+      "id": 3,
+      "name": "Trần Minh C",
+      "email": "tranminhc@gmail.com",
+      "phone": "0987654321",
+      "gender": "Male",
+      "status": "Active"
+    },
+    {
+      "id": 4,
+      "name": "Nguyễn Duy D",
+      "email": "nguyenduyq@gmail.com",
+      "phone": "0987654321",
+      "gender": "Female",
+      "status": "Deactivate"
+    },
+    {
+      "id": 5,
+      "name": "Nguyễn Quảng E",
+      "email": "nguyenquange@gmail.com",
+      "phone": "0987654321",
+      "gender": "Male",
+      "status": "Active"
+    },
+    {
+      "id": 6,
+      "name": "Ngô Văn F",
+      "email": "ngovanf@gmail.com",
+      "phone": "0987654321",
+      "gender": "Female",
+      "status": "Deactivate"
+    },
+    {
+      "id": 7,
+      "name": "Hồ Xuân G",
+      "email": "hoxuang@gmail.com",
+      "phone": "0987654321",
+      "gender": "Female",
+      "status": "Deactivate"
+    },
+    {
+      "id": 8,
+      "name": "Trịnh Quốc K",
+      "email": "trinhquock@gmail.com",
+      "phone": "0987654321",
+      "gender": "Male",
+      "status": "Active"
+    }
+  ],
+  "categories": [
+    {
+      "id": 1,
+      "name": "Tiền Ăn",
+      "image": "data:image/png;base64,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",
+      "status": "Active"
+    }
+  ]
+}
