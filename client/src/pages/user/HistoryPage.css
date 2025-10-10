@@ -1,0 +1,84 @@
+@import "./InformationPage.css";
+
+.side-btn.active {
+  background: #4338CA !important;
+  color: white !important;
+}
+
+.container-fixed {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 24px;
+  width: 100%;
+}
+
+.card {
+  width: 100%;
+  max-width: 700px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(15, 15, 15, 0.05);
+  padding: 18px 24px;
+  box-sizing: border-box;
+}
+
+.transaction-input {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.transaction-input input:nth-child(2) {
+  background: #DEE2E6 !important;
+  border: 1px solid #DEE2E6 !important;
+  color: #111 !important;
+  font-weight: 600 !important;
+  pointer-events: none !important;
+}
+
+.transaction-input input:nth-child(2)::placeholder {
+  color: #111 !important;
+  font-weight: 600 !important;
+}
+
+.transaction-table {
+  padding: 20px;
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.table-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.table-actions .ant-input-search {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.table-actions .ant-input-search-button {
+  margin-left: 8px !important;
+  background: #1D4ED8 !important;
+  border-color: #1D4ED8 !important;
+  color: white !important;
+}
+
+.sort-btn {
+  background: #DEE2E6 !important;
+  border: 1px solid #DEE2E6 !important;
+  color: #111 !important;
+  font-weight: 700 !important;
+  cursor: default !important;
+  pointer-events: none !important;
+}

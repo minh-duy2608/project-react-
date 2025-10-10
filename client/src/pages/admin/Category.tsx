@@ -162,9 +162,13 @@ const Category: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [data, setData] = useState<Category[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [newCategory, setNewCategory] = useState({ name: "", image: "", status: "Active" });
+  const [editCategory, setEditCategory] = useState({ id: 0, name: "", image: "", status: "Active" });
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
+  const [editUploadedImage, setEditUploadedImage] = useState<string | null>(null);
+  const [editUploadedFileName, setEditUploadedFileName] = useState<string | null>(null);
 
   const location = useLocation();
 
@@ -173,7 +177,7 @@ const Category: React.FC = () => {
       .then(response => response.json())
       .then(data => setData(data))
       .catch(error => console.error('Error fetching categories:', error));
-  }, []); 
+  }, []);
 
   const menuItems = [
     {
@@ -303,24 +307,43 @@ const Category: React.FC = () => {
     {
       title: "Actions",
       key: "actions",
-      render: (_, record) => (
-        <Button
-          style={{
-            backgroundColor: record.status === "Active" ? "#ff4d4f" : "#52c41a",
-            color: "#fff",
-            border: "none",
-            padding: "0 15px",
-            height: "30px",
-            borderRadius: "4px",
-            width: 100,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          onClick={() => handleLockUnlock(record.id, record.status === "Active")}
-        >
-          {record.status === "Active" ? "Block" : "Unblock"}
-        </Button>
+      render: (_: any, record: { status: string; id: number; }) => (
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <Button
+            style={{
+              backgroundColor: "#FF9500",
+              color: "#fff",
+              border: "none",
+              padding: "0 15px",
+              height: "30px",
+              borderRadius: "4px",
+              width: 100,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            onClick={() => handleEdit(record.id)}
+          >
+            Edit
+          </Button>
+          <Button
+            style={{
+              backgroundColor: record.status === "Active" ? "#ff4d4f" : "#52c41a",
+              color: "#fff",
+              border: "none",
+              padding: "0 15px",
+              height: "30px",
+              borderRadius: "4px",
+              width: 100,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            onClick={() => handleLockUnlock(record.id, record.status === "Active")}
+          >
+            {record.status === "Active" ? "Block" : "Unblock"}
+          </Button>
+        </div>
       ),
     },
   ];
@@ -365,7 +388,6 @@ const Category: React.FC = () => {
     const newId = data.length > 0 ? Math.max(...data.map(item => item.id)) + 1 : 1;
     const newCategoryData = { id: newId, ...newCategory };
 
-    // Gửi dữ liệu lên server
     fetch('http://localhost:8080/categories', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -376,7 +398,6 @@ const Category: React.FC = () => {
         return response.json();
       })
       .then(() => {
-        // Cập nhật state sau khi thêm thành công
         setData([...data, newCategoryData]);
         setNewCategory({ name: "", image: "", status: "Active" });
         setUploadedImage(null);
@@ -397,16 +418,74 @@ const Category: React.FC = () => {
     setIsModalVisible(false);
   };
 
+  const handleEdit = (id: number) => {
+    const categoryToEdit = data.find(item => item.id === id);
+    if (categoryToEdit) {
+      setEditCategory({ ...categoryToEdit });
+      setEditUploadedImage(categoryToEdit.image);
+      setEditUploadedFileName("existing_image.png"); // Tên file mẫu, có thể thay đổi
+      setIsEditModalVisible(true);
+    }
+  };
+
+  const handleEditOk = () => {
+    if (!editCategory.name || !editCategory.image) {
+      message.error("Please fill all fields!");
+      return;
+    }
+    setData((prevData) =>
+      prevData.map((item) =>
+        item.id === editCategory.id ? { ...editCategory } : item
+      )
+    );
+    fetch(`http://localhost:8080/categories/${editCategory.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(editCategory),
+    })
+      .then(response => {
+        if (!response.ok) throw new Error('Failed to edit category');
+        return response.json();
+      })
+      .then(() => {
+        setIsEditModalVisible(false);
+        message.success("Category edited successfully!");
+      })
+      .catch(error => {
+        console.error('Error editing category:', error);
+        message.error("Failed to edit category!");
+      });
+  };
+
+  const handleEditCancel = () => {
+    setEditCategory({ id: 0, name: "", image: "", status: "Active" });
+    setEditUploadedImage(null);
+    setEditUploadedFileName(null);
+    setIsEditModalVisible(false);
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewCategory({ ...newCategory, name: e.target.value });
+  };
+
+  const handleEditInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEditCategory({ ...editCategory, name: e.target.value });
   };
 
   const handleImageChange = (value: string) => {
     setNewCategory({ ...newCategory, image: value });
   };
 
+  const handleEditImageChange = (value: string) => {
+    setEditCategory({ ...editCategory, image: value });
+  };
+
   const handleStatusChange = (value: string) => {
     setNewCategory({ ...newCategory, status: value });
+  };
+
+  const handleEditStatusChange = (value: string) => {
+    setEditCategory({ ...editCategory, status: value });
   };
 
   const handleUpload = (file: File) => {
@@ -418,13 +497,31 @@ const Category: React.FC = () => {
       setUploadedFileName(file.name);
     };
     reader.readAsDataURL(file);
-    return false; // Prevent default upload
+    return false;
+  };
+
+  const handleEditUpload = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const imageUrl = e.target?.result as string;
+      setEditCategory({ ...editCategory, image: imageUrl });
+      setEditUploadedImage(imageUrl);
+      setEditUploadedFileName(file.name);
+    };
+    reader.readAsDataURL(file);
+    return false;
   };
 
   const handleDeleteImage = () => {
     setUploadedImage(null);
     setUploadedFileName(null);
     setNewCategory({ ...newCategory, image: "" });
+  };
+
+  const handleEditDeleteImage = () => {
+    setEditUploadedImage(null);
+    setEditUploadedFileName(null);
+    setEditCategory({ ...editCategory, image: "" });
   };
 
   return (
@@ -571,7 +668,7 @@ const Category: React.FC = () => {
                   style={{
                     width: "2620%",
                     height: 35,
-                    backgroundColor: "#FF7800", 
+                    backgroundColor: "#FF7800",
                     borderRadius: 4,
                     display: "flex",
                     alignItems: "center",
@@ -595,7 +692,7 @@ const Category: React.FC = () => {
                   width: "100%",
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "space-between", 
+                  justifyContent: "space-between",
                   boxSizing: "border-box",
                 }}
               >
@@ -614,6 +711,84 @@ const Category: React.FC = () => {
                   alt="Delete Icon"
                   style={{ width: 24, height: 24, cursor: "pointer" }}
                   onClick={handleDeleteImage}
+                />
+              </div>
+            )}
+            <hr />
+          </Modal>
+
+          <Modal
+            title="Edit Category"
+            visible={isEditModalVisible}
+            onOk={handleEditOk}
+            onCancel={handleEditCancel}
+            okText="Save"
+            cancelText="Cancel"
+            centered
+          >
+            <div style={{ marginBottom: 16 }}>
+              <label>Name <span style={{ color: "red" }}>*</span></label>
+              <Input
+                value={editCategory.name}
+                onChange={handleEditInputChange}
+                style={{ width: "100%", marginTop: 8, boxSizing: "border-box" }}
+              />
+            </div>
+            <div style={{ marginBottom: 16 }}>
+              <Upload
+                name="image"
+                beforeUpload={handleEditUpload}
+                showUploadList={false}
+                accept="image/png"
+                customRequest={() => {}}
+              >
+                <div
+                  style={{
+                    width: "2620%",
+                    height: 35,
+                    backgroundColor: "#FF7800",
+                    borderRadius: 4,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                    boxSizing: "border-box",
+                  }}
+                >
+                  <UploadOutlined style={{ color: "#fff", fontSize: 18 }} />
+                </div>
+              </Upload>
+            </div>
+            {editUploadedImage && (
+              <div
+                style={{
+                  marginBottom: 16,
+                  position: "relative",
+                  backgroundColor: "rgba(128, 128, 128, 0.3)",
+                  padding: 10,
+                  borderRadius: 4,
+                  width: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  boxSizing: "border-box",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <img
+                    src={editUploadedImage}
+                    alt="Uploaded Icon"
+                    style={{ width: 50, height: 50, objectFit: "contain", verticalAlign: "middle" }}
+                  />
+                  <span style={{ marginLeft: 10, fontSize: "12px", color: "#666", verticalAlign: "middle" }}>
+                    {editUploadedFileName}
+                  </span>
+                </div>
+                <img
+                  src={deleteIcon}
+                  alt="Delete Icon"
+                  style={{ width: 24, height: 24, cursor: "pointer" }}
+                  onClick={handleEditDeleteImage}
                 />
               </div>
             )}

@@ -4,10 +4,12 @@ import AdminLoginPage from "../pages/admin/AdminLoginPage";
 import AdminRegisterPage from "../pages/admin/AdminRegisterPage";
 import Dashboard from "../pages/admin/Dashboard";
 import Users from "../pages/admin/Users";
-import Category from "../pages/admin/Category"; // Thêm import Category
+import Category from "../pages/admin/Category";
 import UserLoginPage from "../pages/user/UserLoginPage";
 import UserRegisterPage from "../pages/user/UserRegisterPage";
 import InformationPage from "../pages/user/InformationPage";
+import CategoryPage from "../pages/user/CategoryPage";
+import HistoryPage from "../pages/user/HistoryPage"; // 👈 Thêm dòng này
 import { ProtectedRoute } from "../components/ProtectedRoute"; 
 
 export const router = createBrowserRouter([
@@ -44,7 +46,7 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: "/category", // Thêm route cho Category
+    path: "/category",
     element: (
       <ProtectedRoute requireAdmin={true}>
         <Category />
@@ -59,12 +61,26 @@ export const router = createBrowserRouter([
       </ProtectedRoute>
     ),
   },
-  
+  {
+    path: "/categoryUser",
+    element: (
+      <ProtectedRoute>
+        <CategoryPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/history", // 👈 Route mới cho trang History
+    element: (
+      <ProtectedRoute>
+        <HistoryPage />
+      </ProtectedRoute>
+    ),
+  },
   {
     path: "/",
     element: <Navigate to="/userLogin" replace />,
   },
-  // Uncomment nếu bạn có trang NotFound
   // {
   //   path: "*",
   //   element: <NotFound />,

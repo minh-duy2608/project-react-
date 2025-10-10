@@ -5,74 +5,19 @@
   },
   "users": [
     {
+      "id": 1,
       "username": "duy268",
-      "password": "minhduy268",
-      "id": 1
+      "password": "minhduy268"
     }
   ],
   "profiles": [
     {
       "id": 1,
-      "name": "Nguyễn Văn A",
-      "email": "nguyenvana@gmail.com",
-      "phone": "0987654321",
-      "gender": "Female",
-      "status": "Active"
-    },
-    {
-      "id": 2,
-      "name": "Phạm Thị B",
-      "email": "phamthib@gmail.com",
-      "phone": "0987654321",
+      "name": "duy268",
+      "email": "nguyenminhduy@gmail.com",
+      "phone": "0965098989",
       "gender": "Male",
-      "status": "Deactivate"
-    },
-    {
-      "id": 3,
-      "name": "Trần Minh C",
-      "email": "tranminhc@gmail.com",
-      "phone": "0987654321",
-      "gender": "Male",
-      "status": "Active"
-    },
-    {
-      "id": 4,
-      "name": "Nguyễn Duy D",
-      "email": "nguyenduyq@gmail.com",
-      "phone": "0987654321",
-      "gender": "Female",
-      "status": "Deactivate"
-    },
-    {
-      "id": 5,
-      "name": "Nguyễn Quảng E",
-      "email": "nguyenquange@gmail.com",
-      "phone": "0987654321",
-      "gender": "Male",
-      "status": "Active"
-    },
-    {
-      "id": 6,
-      "name": "Ngô Văn F",
-      "email": "ngovanf@gmail.com",
-      "phone": "0987654321",
-      "gender": "Female",
-      "status": "Deactivate"
-    },
-    {
-      "id": 7,
-      "name": "Hồ Xuân G",
-      "email": "hoxuang@gmail.com",
-      "phone": "0987654321",
-      "gender": "Female",
-      "status": "Deactivate"
-    },
-    {
-      "id": 8,
-      "name": "Trịnh Quốc K",
-      "email": "trinhquock@gmail.com",
-      "phone": "0987654321",
-      "gender": "Male",
+      "budget": "",
       "status": "Active"
     }
   ],
@@ -82,6 +27,113 @@
       "name": "Tiền Ăn",
       "image": "data:image/png;base64,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",
       "status": "Active"
+    },
+    {
+      "id": 2,
+      "name": "Tiền Cho Con",
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAACNCAYAAAB8O754AAAACXBIWXMAACxLAAAsSwGlPZapAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAVWSURBVHgB7d3bcdtGFAbg30ke8haVsKkgTgXeVBCnAm06cAdSB1EqIFyB7QqoVBClAiIVSH70E41jECMMRyRuuwe7h/83c2Z8oUmKv/cQ2MUFIKJyvcJ6rppyh5Jf1009NfUAKpYE+a6pbVP7E/XY1KYpDyqKBCvh7SfUDu0Ip4w5nB+xY+oGlCWHdhTuI9QGlBWHeOF29RcoGxXihtvVW9DqAtKE221lX4FG+R5pfEC6EH5s6ktT96BVeKQbvf1RTCN8h/g0viOlO7wGDUoR8C/Q4UGDUgSsNbIcaFCKgLW2cH8CDUoRMGUkRcD/Q8dn0KAUAe+gowYNShHwf9BxD1qFR/qJDq0uQSdskTbgAFqVR9rR60CrkwUHjl7DZMJDRlvMcG9BWXGIF3IFypJr6l9w5Jonh81OHc334KpRUeR7OaAN7lSosphfgcFGsfapK93SosPzaSs1iIiIiIiITOhO7pZFhv6EhuzXbpu6A/dtiyT7shLg2NkpCT+A5xcVQU7nnDu/LEFvwLXdLMnomzJqh0qC9qBsLF0dOlXyvAG0qiVteer3tAOpkg2qvXJtwKDVyMjar1QStAcl47FeuC+1b4qsQh4B94O+Adt3NPKB5hTwcft2oNk88g23X1vwMkuzVCgj4H77DqDRx2TJB+ZQnhrtcV5PWOY9Cj2b8YcRj5GW51Amhzjv/R8Uasz5wfxOK9iYgH8HFWsoYBm9XLct2JiAqWDnApaRew1dvzb1GwreqClJgP6+a59DPvvfAYU6N4K12/Ono9/XaD/Yn5v6EzxnKSppz9qjZMw1LgPaiQuO4IUCdD/AHabx0G3fAcZsoRvwHeZxaIPeJX5/AYY46IYrtfQSxN2J5btE7y+gUC/NRXvoqrH8foWymFAdKiD+z1DDkC10R+/c9kwzOOiGG6M90xnH+8EeumrwdrJJHQd8DV2fQGoc2J7N6Y9gD10PYHtOrr+bpN2e34983AbxyX0lKsTZ/Znz/tSP8XLQb88O46R8DxssP2ZrzusGKOlatPbKUS5XtAto9/vNHrXSBXwNXWPbswYH43cXd0jbBpe0Zyi+J495sm/Rl9qej5ncZZOAr6Erp/bcp3XXVFUSsPb/3I8gNdo3p+T1oJVpB5xrezZLO2C2Z2WaAbM9r0A7YFI25vzgtc353n6D6XPMDvkfXCdTqg7tns8Tnm9kcvYEd62Zog30VND7uTRmsjzaOfPHE8/3ASdm4rQ3smia7qKvUh6nF0XeHh6zwVHnYsD5cmgvzuon/JuANmjX/QEDzlM3ch2mc+gtgTLgPN1g2YEI7vAcDDhDDu29L5aS57hiwPmJuXz7jgGvoz7zdzGvavTGasC5z5qdm5iIuXz7mgHr62afTol5AKDZ7+AY16dMZWhFLer7thqwfEi5rj0PnY/1GfE8WN7IukN+agyP4Jhr5qYDrpv6G3n5Y8RjYgb8rYtpraBsoE82WFLdxGtq3WK8bYTXu++eTOsH3GAdDuvfb6LCNA6nlwbH1CN6U53WAxYO64U8d1sgLHjN0H+iSwi4Ix+21s8ro2jptKP8+93E1/THT3JJAQuHtmUuaYFDH/It4k1YOAwfoSKveffSa746PEBDhfaiojnxh3JYRva7a7QbNqlm0RzaaUyP5yC7WbGPODNBcmkj+KJwNck4BmwcAzaOARvHgI0r4dQVbn0vUELAATQbW7RxDNg4BmwcAzaOARvHgI1jwMYxYOMYsHEM2DgGbJzV62TRARcbjGOLNo4BG8eAjWPAxjFg4xiwcQzYOAZsHAM2jgEbx4CNY8DGMWDjGLBxDNg4BmwcAzbuK/3AypJK6YFuAAAAAElFTkSuQmCC",
+      "status": "Active"
+    },
+    {
+      "id": 3,
+      "name": "Tiền caffe",
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHkAAAB4CAYAAADWpl3sAAAACXBIWXMAACxLAAAsSwGlPZapAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAU2SURBVHgB7Z3Reds2FIWP3bzXGwQbpJ2g7ARNJyi7QTcQO0HcCaQ+9THpBGImSDYgM0GcCRzeQHRkhVGCS5DCBc7/fSeKZVkicHgh4BIArxBGNej5oGeD3EEkPv1Bd4NeD2oHvcXCVIP2g+6pi6kbdIsFAutm0EsA91RS2iKS2Q7+7LFQ6FL1Aj4QVTjQYCvqoIzqNwDuKVP6CwHUAC59wJROG0zww8nP0r7/hxntPLko1eHx9bkX1bB15lLT+gNHXOExe3w+G4hdJInyM3xC5ZHJ0kS/B8mFdtCv8p/royd/AsmJCoce9zVIzmwG3Tw5esJBx58gQoWTDs93clp/8rXpBv2G+alLea9H4+caup4c8dSIX38V5iem3rO5TpsWvpf8N/Tc0GQbNJjxtUiT7bAb9A8U0GRbNDgkOEKgybaQTFZwNNNke+wQCE22h0Tzu5A/oMk2CZq5SZNtchfyYppsk6chL6bJNgm6YkiT7SEGB03Posn2CJqVKdBkWzgoLmfSZFu8hAKabIctlFO0aHL6OPhZtDWUPAFJlWrQL/AdrTmLHd7GMHkLIjjo2E68T/Aw6QyPrlrVWG+GP7WOOjGW38l587v8Q5PzRZrpT1eraHKe9PBThT5Bk/Ojh18D9XA5kibnhRgr38P98ZM0OR96+Aj+YtYIkyF50MMb3E/9kpFsH+lFPyw4n4KRbBfZF6SBXy91Fppsj+82d4Qm20DmWe/gjW0RSAyT/wURnkK3qc5U/clQqD+oReAU3HPU0CXBiadGovXH3nUB0OQCoMkFQJMLgCYXwLHJPUiWMJILIEYkc2/sxDk2WZtVockeh3B6rMCpyRqjubuuR3OyR0tXnuP0O/kDwmEke54hHE19B3NqcotwGMkeTT0sfms+4TrCh2rO4Nxw0LVoPVbgOsKHxly3YxVta7ZKJJ8iZmkul1Uomx109Xax4OgRfrC3KJsOysVol+IW4Qdc8l1oKuii+BVWYiqtqflwaXYqlEkNHauZPMV4f6jQM3OP8nDQRfE9EriL/A66Ay9tzLyBrp7eIAEq6A5+i3Jw0N9jOnjDtaXQNNmiCmWwgeGmeqSBrgB75I+D3uAWCaFNjCTVHC3EDvq6qZEYO+gKIk29Q57ICaw1uEOCVNAXKIkeZGQc9H2VJKN4ZAd9oV4gHxz0velko3jEQV8w0QZ5MPfGmDUSp8G8AlrviG0xr/wdDCA9bTnQEiN6rsGi5zCCHOjcwloyWk7suU20aAtjyM7pcwstnbHUZ5I4zG+5xmbawRgxmu3UCy/9hznDJJPN9CkV4lRAas23g0/JxipbA+PMyfpMRXWNyyGtk5xssaJX1CITNNOEUjJ7CXPHcjhkxB5xK2isJKl8h2Wo4E/Q2OZmabAQa5jxNcl7iyEV9D1yB99CLGXsqGQvylxhPqPRDssjk9F7+M3L7jC9GMDB76k1Ti5cY7gmxzK5Q21OLB3RKatDQXPbxOgYyRJrBjsUSANbRmnVovA1YDHH0Smq9GVBDzjESYGmpA5c3DdJA1tGfk1bcInuWRzsRnUHRm8QNeyYLcmN3KcWL0qNdM0WcxuwaY5GDT8UScFcOQ6z138t4OCHJR3WN7ZB5gmNGLnr2EiKsIKPKtlZKGazKTnm/+FzzK9QyKaxKZp8ipjuDo/jTkPy84+YPgHeHR7FyDt8vqgxPhJCCCGEEEKIkuMhlAMT8VZooRwO1kgjvUh9WzUC4N1kCoAmFwBNLgCaXAA0uQBocgHQ5AKgyQVAkwuAJhcATS4AmlwAHwHgyoDePHTXcwAAAABJRU5ErkJggg==",
+      "status": "Active"
+    },
+    {
+      "id": 4,
+      "name": "Tiền dự phòng ",
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIYAAABsCAYAAACvpsp1AAAACXBIWXMAACxLAAAsSwGlPZapAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAKISURBVHgB7d3hTdtAGMbxh6oDdITboOkEuBt0A9JN0kl6TNBuUDNBGcFswAZwkc23J8YXYt9d9P9Jr/LBKHql/HEIVhIJAJa6mW67NEHA5C2MmOZOwOSTAIMwYBEGLMKARRiwCAMWYcAiDFiEAYswYBEGLMKA9ZEwosaLcEz9c69MnDFgEQYswoBFGLAIAxZhwCIMWIQBizBgEQYswoBFGLA+ax37NLfK86DxwtwSXZpdmq9ax9O0y6DzdKp7v8VimpfM+b3h/b35kubPGfd97hx3Clqu1v1i7n239FQS0vxP80Pb2af5p/EBf09Q3ftlaSmMg/J+ey8laNnZ7KC698vSShhBZd+NfzwLdDPHg+reL1srYexV3m7m2F7l7XRBLZ0xSpt7hRFU3kVfAfF/DFiEAYswYBEGLMKARRiw1rqIVoNB44U551blX2IOqni/aw6jT/PzxLGo8mH0qng/nkpgEQYswoBFGLAIAxZhwCIMWIQBizBgEQYswoBFGLAIAxZhwCIMWIQBizBgEQYswoBFGLAIAxZhwCIMWIQBizBgXfM70Tqd/tCy3M8gXUOnive75jCC6vhsrFOCKt6PpxJYhAGLMGARBizCgEUYsFoJ41HlPc0cq32/bISxXJw5Vvt+2VoJo0/zV+VEzX+bUK+698vW0t8Yxw8yG7S9Ic2vBT9X+35ZWgrjOc33NPfazvEs8E3LHvDa98uy1rWSXvkeFvzMoPH6wmG6DVrH4zS98gyqe79sUed9URvaEHXFX5aHDREGLMKARRiwCAMWYcAiDFiEAYswYBEGLMKARRiwbqbbmOZOwIQzBizCgEUYsAgDFmHAIgxYhAGLMGARBizCgEUYsF4BEkS+LSa86DEAAAAASUVORK5CYII=",
+      "status": "Active"
+    },
+    {
+      "id": 5,
+      "name": "Tiền đi chơi",
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIYAAACGCAYAAAAYefKRAAAACXBIWXMAACxLAAAsSwGlPZapAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAARJSURBVHgB7d3RbeQ2FIXhs0H6sFNJ0omUSnhTiVhK0olTieJRLCAPd7Ir6lIkR/8HEPuk0bH8w8bCux4JcHzT+Bb17XcN6BXCWNW3IZ/xTwIchAEXYcBFGHARBlyEARdhwEUYcBEGXIQBF2HA9bPu6c/P87eOefs8vwnDWAvOrOPmwnsNiW8lcBEGXIQBF2HARRhwEQZchAEXYcBFGHARBlyEARdhwEUYcBEGXIQBF2HAddcw3nXcmzCUtfBM+nHTifugkVV14zgTBWE0tKpeHGejIIyG1oDjxRERBWE0tAad/8YRFQVhNGSKjSMyChOaMsV9MonixZiIAk+YiAJPmIgCT5iIAk+YiAJPmIgCT5iIAk+YiKJIVv0vuUdPUixT3DZTrKS4bVFnkzsc1mscplhJMc8q+mxyp+N6i8MUK0khz6jG2eSOB/YShylWkkKeTa2zyZ2PbB2HKVaStHZ+NnmAoa3iMMVKktYBziYPMLRFHKZYSeM8500eYOjVcZhiJY31jDd5gKFXxmGKlTTe893kAYZeFYcp1mPjCM/ypcKoEUekx7YRnuFLhtFrHI9NIzy7lw6jtzgeW0Z4Zk/Pmbel+Ev/BnXWu2I+qfb15x9q6/GxmGI8PpYPnTep8C01so5XtSjOrJOFq4+vHElxH8esOLng/sUXLoo1F2zoKY6kPqN4yAUbii9cFG8u2NFDHEkK2z0rXi7YUXzhojrmgi0t40iK2zurjlywpfjCRfXMBXtaxJEUt3NWPVnH9xRfuKiuWcc3XRlHUty+WXVlHdzU8+/gWhXnm+JFvmbkxxoqq6+vGFPBnmfHVI8pbuekenLBnuILF9UxFWxpEcXOpLC9k+rIBVuKL1wUbyrY0TKKnanvOHLBjuILF8WaCjb0EMXO1G8cuWBD8YWL4kwF9+8pip2pzzjy0fuf+SHau2L+mvWm2B86mdqxrz+Tzsuf5xfF/BDtTYWy4kpvdUz9MI317LyzyQMMHSWKnWmsZ/hyYZj6ZRrrWb5MGKZYSX3/L/srzyYPMPSKKPbXJo4veYChV0VBHIOGYYqV/uded45jkwcYenUUd49jkwcYaoqVDtz7jnFscucjTbFSwYa7xbHJHQ80xUonttwpjk3udJwpVgrYdJc4NrnDYaZYSXHbkmKZ4rZFnVt4fCKjH1x0HLhYjSiIY3A1oyCOQV0RBXEM5sooiGMQLaIgjs61jII4OtVDFMTRmZ6iII5OREYx63V+7dPtRUaxmwNfF41ER7Gbg14bjdSIYjcHvD4aqRXFbj55DzRSM4rdfOI+aKTkk2U6zgrvNaSefwdXTR867kM3ctcw8B2EARdhwEUYcBEGXIQBF2HARRhwEQZchAEXYcBFGHARBlyEARdhwEUYcJ15W4qRTZ/nVx3zrhup8e6CV+v9n88N+Yz5VgIXYcBFGHARBlyEARdhwEUYcBEGXIQBF2HARRhw/QOeCQ7/RTraogAAAABJRU5ErkJggg==",
+      "status": "Active"
+    },
+    {
+      "id": 6,
+      "name": "Tiền sửa đồ",
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIMAAACGCAYAAAD+UDnVAAAACXBIWXMAACxLAAAsSwGlPZapAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAq/SURBVHgB7Z3/ldu4EYC/y7v/z1eBJxWcS0AqiFOBmQ58FYipwJsKxFRwTgXkVWCnAjIV2FeBIjxJ8UqWdoHBgAS4+t6bt/vecjEAOBgMiF9w586RH1gfr/bS7OUX5uX3vXzcy1fuFIE3hHEvu4VkPObhTgE0LGcIJ3lPpfyJdfGW5Zm7ezJjbcbwE8vzhjtF8IXlu4kvVMqaPMMrygjeSslHNGsyhpLcs1Aha/MMpVBl3HD3DHkQKuRuDHl4TYWsyRhKGFaeqLKbWNPchB/SlRI3+PmJn6mMtRiDNwLN+P7fPD+x5F2+I56fuU9aLYJD94HIBaT9Vpl2dV3FWmIGbffw2eiZa9yNYSE0Ff+VMDc+oUOojJdsDP+JePa/xFPd8HItxqAZVo4Rz2q6ins3sRCaio9p7RPxCJXxI3a4o/h+2K8FnJgHQRdAxrT2iXh8nt6gD0A1+prjz+Eoi7Dh+6FVzyFzuZC9PKBfwxDjTbTDSy9b8noJx6GuL/VuWICGpytjxLZCZC8d6YtQYnWm6rOsA9/6/ct+riE4ZmYkvEJ69N7CV8AHUL+MSwONZWckW/RG4bjuBSzLqeY9+pcRUykNtkvaBuKZDPWPhDeKUC9wS2ZZrS3Y7FHouV0xQlxLCJUH4vmYIR89txuEw6bss0zgdaRn9LK1bPhWOW/Jt8BV01q6THkZ+dYYUr3ALflARgTbzF5rMTnT1+yv0HaJofIpc/rZPoL1kDXjuUVTMSnDyxKkJwMNsKtcNMgM+cotDmNGYFepDKQNbZvKyz9iGExugF1l4oMxP3pw2OHIF1DmlhYDhDK2r4XKwCHoyzmsEurzFiZDzQ7YVSADC3yGPeocqKOOtiQgwK5wGVjGCC5x1GEUDiUjsCtURsowgksayq63HmWhUl7Ue/JVig8MS9krcQ2fN5/HHGUfSP9K2xBZmNFImcMu7hgp0xvcwr+0lHo8iX/xLecNoE1ML7gxbRIUjTfSFNJc6EDZ3uAWgv6T88DTxq+tSy8tgZnfJUjI939HnLeYZTo2My16L3ALB+yU4vWIT+Sp7XXdXt6ho9vL3yOeFw4F2nB9Snc6pjdgx6ujTjnK5QrrP456Px9/TtjRcJhJvPai/XmSPs4YiNue16PvOoe9/OXWH1MnZQQ9jnNvMWDXLTgOFT0SXyb/P1vsYhV5lI+TF0iZWRTS3pm7lbCmsqL6oMDCOdLJsUbgZBhCGo9XNFvQoi/Tp2sJNqRVUinBXa6FIpeypZw9Eqfd6NqynCGkeYXfKMMYfKA55zyKr7OG5RHS3t8ZHTYVIyyDN8Se+YygJC/h442RtPyfYbX0yrfKhnkRyvj8OzK/QVh5wjN6bCrkJBvmwbeKkqbXvzDfxlurvSTfGUOORZ89eVtKaYYwl0EI9o33O1pjBV5G8lSMUPaCm/9/3TPGIj4IMgZPQ55KtvycLNSxwsjn0XKElcN7PxvjCXkq22pDR4d93nJJTzqWe00vjVVCM9AtmYEbNBnylFtSvKKQZ5NNh8JrtRkyMqLb2STYeyzvJgcOlfPx+PuXDDo03YWjwC7bkafbiM1UZ6TXl6XlaQ/l/9ZgV+6WOHLEB74sDgMEe3fVEo4Y6NN+EGtIN4pY79Am6rsU/+4EY1rsMhjTVXSJugbSInshfWzfEk6TqOuxPJARq0+gjnDGBD0ddnQJ+Yg54/pNgp7H+qo5sEMCdbkEHQP29An5cYE6JEGHl5GZz6MUDlPX2gyH0qGvEMGelLUDMS47pQEstpygQ/eiQhnRVUpDPhp0eYop96RI/yMKLE+I1Vhh6CmtPm0hngnbWOGSDv3psaH1FWM4J1R3a1oaw0/EE1pQbb/3D/LzL3S4wOdCG8xj/owCS2PQZCC0oFpjGMhPhw4JfG4intcoWNozfA18TojHpz2Rnwnd9UMS+NzETCwdM4RWoibtmPskUvlMPDlv2xMUrOkqw0s0rVWLpl8vjjUbw5y31ZeyVySJNRuDKqJWktPlz4alMWhcZWiL0rj8X5gPzWjnj8DncsZiZyztGUILOhGP9kNVLILuhU2Bz1VpDJovZaHj4QkdDflx6AgdgQjxqALapbuJ0PuiB3S8Iz8bdIQag+YD0uKeQePOQvt1XziNsQn5J6qEeCbCX5gmEJ5zJHVG6mbXUB6U6ee6fEPQz6RuCUdbr78x855Pi509EqjLJejosadPyI8L1CEJOryMzGQQVsveYoZlKfq22LFNyMdIOC5Bz0myL3uz3NnTEE6bqKsnraVYnP+wJZy3iboeywZjhGWXyqceU3NqmQ3xNNh4QiGc1kDfYzFbKu8oYxNNa6TXl6Xh+U00G+zKvSWOIjfRLLLz9wYW3uFaXnoOEfj2+Lu1jhFdq7Q6avhSNkTiK36bISO+cIKeHMaZWxr0CHkMYkvgsFsyZcDqRLg+Q95yyRYbtN9anpKRZxrmO/Ls/G2xI/XE+7nE51GwY9Yue5NJmcMe4X6Mj6Wc0WRQkGXn7yPuB3zZyRnWiT8wDy/56L8Wu3yfYXko6Cw7fx8hvNxDQRsyHAraYlMZc7WKS4RlD/4aWG5xrGB8XHDqB52eMlYKN8zrJZbwhNfwdW+6Iz5l6DJSzrJxIb+XiLk6aA5Sh9tXSYkdWuwK1pCOcDCKlErKaQQOuxhjQ1pDvpnBlIoS9DgOo5AvjzIp2ODQG8aE7QXrl9Ph28S0hTQDf/vUhWV9QuY64i4sO3mBv97QOe3lV5SHUDyh881RhO9b+Ve+XVQ2YLtdz3H7boqJw1ECA3GrwjsyXjAnpAWTjufxL2IToWdD/cTEZN5gXECaqYtgJEBH0lCzv5Hmq2Pm+4R0hfpIWSU18vTai1GZrpeWiAJY3bUc6wWeqxxHPThsF8i4R2k3pNVjVBDcJCg7zYb1CWk8JRvKJtdJ8KcX+R67u8qD6RMU5pYRZtlGF4uj7Cn2ESUO2BUuW8qIJRx1LLwREuiAXQWyZZl4wlHP6qstieRYiJpTRvR7IUPxdeL77R7YVSJmC25aYFehbLH1Fo7zr6Q1SYsRtaw7vCV+zqVBT0NdXuBSRoxxwK5yEXTUVMZr0pCBHthVLJrFNxZ3PywpA8+gPazjV/KS+0BPjTEIefmdvDTPPaA1hs97+Se2+FlBP1vnj/bxL8vPok3koSRj8OX+G4fu15/S4utgwpaOzMcOWw01B25H+kKeLmlLPDl2Mw3cNrLm+PdUHSMzHtihyWDsSqEG21HMJ+LpDfXHbDoW0lZqzbo2MyaTA/rxvmD3FVRzANZkpNt7GO1yuYY4bzEyMw5bL/Acgo1RCHGk6tti566FMG/RsAAttl4gBCHNKGKCSO2w0jeEB/L22Q3XvUXLgrhjBnwfNefSce2LaghHu6xMmA/hUPctdS38MUczqmkJp1Wkv9jBnFrWcsXARDyvI54V4pnzJhwT1mIMmoqPiRliDOeE5dL6WXjJnkEintV8sfxMZbxkY3hFWKAb+twld2NYCG3FS8AzGq/gqa6b+JF1MKHjQ8D/aofJ1XmGH1gPua4S0OC9QujFKsWwlm7CM1EO1Q0rPWsyhpJeQHXxgufuGfJQXbzguRtDHu7GsDAlvYAqu4k14UcSu0KklFFNFGvyDF8po0WWko9o1mQMnonlqXJY6VmbMZTwIqqNF9ZmDCUEkR+5UwRLbwweqTR49PwP0i4C9pRk9SYAAAAASUVORK5CYII=",
+      "status": "Active"
+    },
+    {
+      "id": 7,
+      "name": "Tiền xăng",
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB4CAYAAAA5ZDbSAAAACXBIWXMAACxLAAAsSwGlPZapAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAUaSURBVHgB7Z3Rdds2FIZ/O32vNygyQZ0JSm/gTFD5rW9NJxAyQdwJzEzQdgIzE8SdgMgEViZQeU0yoV2RIimSAH7e75zrxKZs3YNPgACIvASekxRxV0RexF4jqsgrdwYtbANKVuO02AIqdxWSz1B26RwKI1evii+3RVxCoUR6sPReA4URJ4L3UGg5L2IHhZWdCH6Awsq/IvgjFFbSs+o/9yh3sRQeZGR+c159c1OEg8KCyH176ICF7kPHHI+VwwtU1EP0S5LqQRctx3/F8CH9UxEpFGGO9pNe6zDRqijF8FfXHZSaFAu13zkUalQwOSqYHBVMjgomRwWTo4LJUcHkqGByVDA5KpgcFUyOCiZHBZOjgslRweSoYHJUMDkqmBwVTI4KJmdtgrtOBabkB6yL+tTTt1gJa+rB2yKuq/iAlbAWwSLXNr5/hwOVaBhZg2C5TMQe+LmtjlHDLliKy9x2HKcvQMMs2BTxF7pnzXLsHsRFaFgFG/QXRy2ZVbD0XDPg8QbHe3uUMAqWte6Y91X5HbrlE5tgWfpsMJ4NyCQzCX651h0L1RqZRbDsTllMhwXJGplBsME85SEo1sixCzYolzhzzH7lbw6djQdHzIKXWL8azPcCWoSYBctEyGB+DCKuEHSoTlaCctLyY8fvyWMMhuGKyFDWe8pwWmW9qWbMQ7BFvMd4ZBTYFPEzTmu/Nr5Wx/9ue4BMKHIsV5Ft7FIkmTm3rkgwDll6PS6UY44DL57LBRNoxhbDMPBbavERw3veduEc6zwvQ2m0a/Qn9ZDfy7hHfzYe8mtKfpocWo9JSHxG+I31Mt6hH7nHHCWsJPHZcxISBuE3VjO+9Y4OLgPIMz9HGLs1x3LYIKwNB5F7rBcb+MfEsg7eIjx+RwSI4C/wj+s4liDM7ULpxUnH8Qf450EEp/CLQ3djDJllL01Xbg7+Jf8jX+SV6GMNXMfmSJL3HnM7Fq27RhXXHnPL0Rj5fG10WBzHechrSCMew3rI69lGR43BsluVfdeS+8CjDxbLblV+k3vowwYZVhJ0r/N+wbjNcvmgQd6XUvS/eUTfRvTFWc/HGZTtKnFK+7Uh7SlvGRkmIMXwV9YdxrEPPMaQjnieO4wghnVw357ug5BzeyIGwV8RLg6BE4PgEDYM2ghhk6iTGARnCJcMgaM9+DRCzu2JWHpwiJMZB+3Bk/EnwiPEnP5HLIJvEV4vPrYPHQSxCBa5IfUYOX3WIQJiOvFderGDfxy6634ERUyCpRffwD+SQ/A7WDWxXbqSFfEH/PEeEcycm8R4bZIMj6dcQjIWeU6LyIj14jOLZSVHKVeI+epCi3K4nvP9cFc9h0WkxH4BuAzXb1CdXDYxn6q/Hc2M+RAMJRwcyrNQbjDNMkrEXqE888Ihcpiq7KRFvEYp5yOGyak3UmqxGUhgLAie4bsgOfnMNP5t4vD9AwMHUtgrvj9UEcW+8RyspSD4alHB5KhgclQwOSqYHBVMjgomRwWTo4LJUcHkqGByVDA5KpgcFUyOCiZHBZOjgslRweQcOmVH6mMZdJf4/QnDMTjtvoJMTN1+uyoydCBit/Bbt1LjtMjRUnrZIIzK7xrTiTYiti7DJ3K7hmQlPrIirl6hHNd/g8KGKeKLCP4A0vvXK7iQIbrPHUSUONmJ4D0UWkK5KYcyD04EZ1BYyWSITjDsfnxKPLyWWbRDuR5OoDAhdUWeXVVpEddujUZ7WLRgUF4pnweSqEb/cJW7BA3+A7vkhHvxgRIkAAAAAElFTkSuQmCC",
+      "status": "Active"
+    }
+  ],
+  "monthlyCategories": [
+    {
+      "id": 1759974468625,
+      "month": "01/2025",
+      "categories": [
+        {
+          "id": 1759974472908,
+          "categoryId": 1,
+          "limit": 1212
+        },
+        {
+          "id": 1759974910726,
+          "categoryId": 2,
+          "limit": 1212
+        },
+        {
+          "id": 1760057090118,
+          "categoryId": 3,
+          "limit": 4444
+        }
+      ]
+    },
+    {
+      "id": 1759976518633,
+      "month": "02/2025",
+      "categories": [
+        {
+          "id": 1760034761629,
+          "categoryId": 2,
+          "limit": 121212
+        }
+      ]
+    },
+    {
+      "id": 1760034269705,
+      "month": "03/2025",
+      "categories": [
+        {
+          "id": 1760060999970,
+          "categoryId": 1,
+          "limit": 121212
+        }
+      ]
+    }
+  ],
+  "transactions": [
+    {
+      "id": 1,
+      "createdDate": "2025-01-10",
+      "total": 150000,
+      "description": "Tiền ăn sáng",
+      "categoryId": 1,
+      "monthlyCategoryId": 1759974468625
+    },
+    {
+      "id": 2,
+      "createdDate": "2025-01-15",
+      "total": 200000,
+      "description": "Tiền đi chơi",
+      "categoryId": 5,
+      "monthlyCategoryId": 1759974468625
+    },
+    {
+      "id": 3,
+      "createdDate": "2025-02-05",
+      "total": 120000,
+      "description": "Tiền xăng xe",
+      "categoryId": 7,
+      "monthlyCategoryId": 1759976518633
     }
   ]
 }

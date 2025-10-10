@@ -1,0 +1,97 @@
+@import "./InformationPage.css";
+
+.category-container {
+  width: 100%;
+  max-width: 700px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(15, 15, 15, 0.05);
+  padding: 18px 24px;
+  box-sizing: border-box;
+}
+
+.category-header {
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #111827;
+}
+
+.category-inputs {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+/* 3 card 1 hàng cố định */
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+/* card kiểu ngang có icon bên trái */
+.category-item {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+.category-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.category-left {
+  background: #f4f4ff;
+  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.category-left svg {
+  font-size: 20px;
+  color: #000;
+}
+
+.category-right {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.cat-name {
+  font-weight: 600;
+  font-size: 15px;
+  color: #111827;
+  line-height: 1.3;
+}
+
+.cat-limit {
+  font-size: 13px;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+.category-item button {
+  align-self: flex-start;
+  margin-left: auto;
+  font-size: 13px;
+  color: #e11d48;
+}

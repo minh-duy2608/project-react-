@@ -8,17 +8,14 @@ import {
   Avatar,
   message,
 } from "antd";
-import {
-  LogoutOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
+import { SearchOutlined } from "@ant-design/icons";
 import { Link, useLocation } from "react-router-dom";
-import lockIcon from '../../icons/LockIcon.png';
-import unlockIcon from '../../icons/ActiveIcon.png';
-import dashboardIcon from '../../icons/Dashboard.png';
-import userIcon from '../../icons/UserIcon.png';
-import categoryIcon from '../../icons/UserCategory.png';
-import signOutIcon from '../../icons/SignOutIcon.png'; 
+import lockIcon from "../../icons/LockIcon.png";
+import unlockIcon from "../../icons/ActiveIcon.png";
+import dashboardIcon from "../../icons/Dashboard.png";
+import userIcon from "../../icons/UserIcon.png";
+import categoryIcon from "../../icons/UserCategory.png";
+import signOutIcon from "../../icons/SignOutIcon.png";
 
 const { Header, Sider, Content } = Layout;
 
@@ -29,7 +26,12 @@ interface PaginationProps {
   onChange: (page: number) => void;
 }
 
-const CustomPagination: React.FC<PaginationProps> = ({ current, total, pageSize, onChange }) => {
+const CustomPagination: React.FC<PaginationProps> = ({
+  current,
+  total,
+  pageSize,
+  onChange,
+}) => {
   const totalPages = Math.ceil(total / pageSize);
   const [isPrevClicked, setIsPrevClicked] = useState(false);
   const [isNextClicked, setIsNextClicked] = useState(false);
@@ -74,7 +76,6 @@ const CustomPagination: React.FC<PaginationProps> = ({ current, total, pageSize,
           color: isPrevClicked ? "#fff" : "#000",
           cursor: current === 1 ? "default" : "pointer",
           outline: "none",
-          boxShadow: "none",
           padding: 0,
           display: "flex",
           alignItems: "center",
@@ -85,6 +86,7 @@ const CustomPagination: React.FC<PaginationProps> = ({ current, total, pageSize,
       >
         {"<"}
       </button>
+
       {pagesToShow.map((page) => (
         <button
           key={page}
@@ -98,7 +100,6 @@ const CustomPagination: React.FC<PaginationProps> = ({ current, total, pageSize,
             margin: "0 4px",
             cursor: "pointer",
             outline: "none",
-            boxShadow: "none",
             padding: 0,
             display: "flex",
             alignItems: "center",
@@ -109,6 +110,7 @@ const CustomPagination: React.FC<PaginationProps> = ({ current, total, pageSize,
           {page}
         </button>
       ))}
+
       <button
         style={{
           width: 40,
@@ -119,7 +121,6 @@ const CustomPagination: React.FC<PaginationProps> = ({ current, total, pageSize,
           color: isNextClicked ? "#fff" : "#000",
           cursor: current === totalPages ? "default" : "pointer",
           outline: "none",
-          boxShadow: "none",
           padding: 0,
           display: "flex",
           alignItems: "center",
@@ -150,89 +151,104 @@ const Users: React.FC = () => {
   const location = useLocation();
 
   useEffect(() => {
-    fetch('http://localhost:8080/profiles')
-      .then(response => response.json())
-      .then(data => setData(data))
-      .catch(error => console.error('Error fetching data:', error));
+    fetch("http://localhost:8080/profiles")
+      .then((response) => response.json())
+      .then((data) => setData(data))
+      .catch((error) => console.error("Error fetching data:", error));
   }, []);
 
-  const menuItems = [
-    {
-      key: "/dashboard",
-      label: (
-        <Link
-          to="/dashboard"
+const menuItems = [
+  {
+    key: "/dashboard",
+    label: (
+      <Link
+        to="/dashboard"
+        style={{
+          color: location.pathname === "/dashboard" ? "#4338CA" : "#000",
+          fontWeight: location.pathname === "/dashboard" ? 700 : 600,
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        <img
+          src={dashboardIcon}
+          alt="Dashboard"
           style={{
-            color: location.pathname === "/dashboard" ? "#4338CA" : "#000",
-            fontWeight: 600,
-            display: "flex",
-            alignItems: "center",
+            width: 16,
+            height: 16,
+            marginRight: 8,
+            filter: location.pathname === "/dashboard" ? "none" : "grayscale(100%)",
           }}
-        >
-          <img
-            src={dashboardIcon}
-            alt="Dashboard"
-            style={{ width: 16, height: 16, marginRight: 8 }}
-          />
-          Dashboard
-        </Link>
-      ),
-      style: {
-        borderBottom: location.pathname === "/dashboard" ? "1px solid #4338CA" : "none",
-        padding: "8px 16px",
-      },
+        />
+        Dashboard
+      </Link>
+    ),
+    style: {
+      borderBottom: location.pathname === "/dashboard" ? "1px solid #4338CA" : "none",
+      padding: "8px 16px",
     },
-    {
-      key: "/users",
-      label: (
-        <Link
-          to="/users"
+  },
+  {
+    key: "/users",
+    label: (
+      <Link
+        to="/users"
+        style={{
+          color: location.pathname === "/users" ? "#4338CA" : "#000",
+          fontWeight: location.pathname === "/users" ? 700 : 600,
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        <img
+          src={userIcon}
+          alt="Users"
           style={{
-            color: location.pathname === "/users" ? "#4338CA" : "#000",
-            fontWeight: 700,
-            display: "flex",
-            alignItems: "center",
+            width: 16,
+            height: 16,
+            marginRight: 8,
+            filter: location.pathname === "/users" ? "none" : "grayscale(100%)",
           }}
-        >
-          <img
-            src={userIcon}
-            alt="Users"
-            style={{ width: 16, height: 16, marginRight: 8 }}
-          />
-          Users
-        </Link>
-      ),
-      style: {
-        borderBottom: location.pathname === "/users" ? "1px solid #4338CA" : "none",
-        padding: "8px 16px",
-      },
+        />
+        Users
+      </Link>
+    ),
+    style: {
+      borderBottom: location.pathname === "/users" ? "1px solid #4338CA" : "none",
+      padding: "8px 16px",
     },
-    {
-      key: "/category",
-      label: (
-        <Link
-          to="/category"
+  },
+  {
+    key: "/category",
+    label: (
+      <Link
+        to="/category"
+        style={{
+          color: location.pathname === "/category" ? "#4338CA" : "#000",
+          fontWeight: location.pathname === "/category" ? 700 : 600,
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        <img
+          src={categoryIcon}
+          alt="Category"
           style={{
-            color: location.pathname === "/category" ? "#4338CA" : "#000",
-            fontWeight: 600,
-            display: "flex",
-            alignItems: "center",
+            width: 16,
+            height: 16,
+            marginRight: 8,
+            filter: location.pathname === "/category" ? "none" : "grayscale(100%)",
           }}
-        >
-          <img
-            src={categoryIcon}
-            alt="Category"
-            style={{ width: 16, height: 16, marginRight: 8 }}
-          />
-          Category
-        </Link>
-      ),
-      style: {
-        borderBottom: location.pathname === "/category" ? "1px solid #4338CA" : "none",
-        padding: "8px 16px",
-      },
+        />
+        Category
+      </Link>
+    ),
+    style: {
+      borderBottom: location.pathname === "/category" ? "1px solid #4338CA" : "none",
+      padding: "8px 16px",
     },
-  ];
+  },
+];
 
   const columns = [
     { title: "STT", dataIndex: "id", key: "id", width: 70 },
@@ -244,17 +260,28 @@ const Users: React.FC = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (status: string) =>
-        status === "Active" ? (
+      render: (status: string) => (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            height: "100%", // 🔥 canh thẳng hàng với header
+          }}
+        >
           <span
             style={{
               display: "inline-flex",
               alignItems: "center",
+              justifyContent: "center",
               gap: 6,
-              backgroundColor: "rgba(82,196,26,0.1)",
-              color: "#52c41a",
+              width: 110,
+              height: 28,
+              backgroundColor:
+                status === "Active"
+                  ? "rgba(82,196,26,0.1)"
+                  : "rgba(255,77,79,0.1)",
+              color: status === "Active" ? "#52c41a" : "#ff4d4f",
               borderRadius: "12px",
-              padding: "2px 10px",
               fontSize: "13px",
               fontWeight: 500,
             }}
@@ -264,72 +291,51 @@ const Users: React.FC = () => {
                 width: 6,
                 height: 6,
                 borderRadius: "50%",
-                backgroundColor: "#52c41a",
-                display: "inline-block",
+                backgroundColor:
+                  status === "Active" ? "#52c41a" : "#ff4d4f",
               }}
             />
-            Active
+            {status}
           </span>
-        ) : (
-          <span
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-              backgroundColor: "rgba(255,77,79,0.1)",
-              color: "#ff4d4f",
-              borderRadius: "12px",
-              padding: "2px 10px",
-              fontSize: "13px",
-              fontWeight: 500,
-            }}
-          >
-            <span
-              style={{
-                width: 6,
-                height: 6,
-                borderRadius: "50%",
-                backgroundColor: "#ff4d4f",
-                display: "inline-block",
-              }}
-            />
-            Deactivate
-          </span>
-        ),
+        </div>
+      ),
     },
     {
       title: "Actions",
       key: "actions",
-      render: (_, record) => (
+      render: (_: any, record: User) => (
         <img
           src={record.status === "Active" ? unlockIcon : lockIcon}
           alt={record.status === "Active" ? "Unlock" : "Lock"}
           style={{ width: 15, height: 20, cursor: "pointer" }}
-          onClick={() => handleLockUnlock(record.id, record.status === "Active")}
+          onClick={() =>
+            handleLockUnlock(record.id, record.status === "Active")
+          }
         />
       ),
     },
   ];
 
   const handleLockUnlock = (id: number, isLock: boolean) => {
-    setData((prevData) =>
-      prevData.map((item) =>
-        item.id === id
-          ? {
-              ...item,
-              status: isLock ? "Deactivate" : "Active",
-            }
-          : item
-      )
+    const updated = data.map((item) =>
+      item.id === id
+        ? { ...item, status: isLock ? "Deactivate" : "Active" }
+        : item
     );
+    setData(updated);
+
     fetch(`http://localhost:8080/profiles/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...data.find(item => item.id === id), status: isLock ? "Deactivate" : "Active" }),
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(
+        updated.find((item) => item.id === id)
+      ),
     })
-      .then(response => response.json())
-      .then(() => message.success(`User ${isLock ? "locked" : "unlocked"} successfully!`))
-      .catch(error => console.error('Error updating data:', error));
+      .then((response) => response.json())
+      .then(() =>
+        message.success(`User ${isLock ? "locked" : "unlocked"} successfully!`)
+      )
+      .catch((error) => console.error("Error updating data:", error));
   };
 
   const filteredData = data.filter((item) =>
@@ -337,7 +343,6 @@ const Users: React.FC = () => {
   );
 
   const pageSize = 8;
-  const totalPages = Math.ceil(filteredData.length / pageSize);
 
   return (
     <Layout style={{ minHeight: "100vh", background: "#fff" }}>
@@ -369,7 +374,14 @@ const Users: React.FC = () => {
           inlineIndent={0}
         />
 
-        <div style={{ position: "absolute", bottom: "0px", left: -100, right: 0 }}>
+        <div
+          style={{
+            position: "absolute",
+            bottom: "0px",
+            left: -100,
+            right: 0,
+          }}
+        >
           <Button
             type="link"
             block
@@ -384,7 +396,13 @@ const Users: React.FC = () => {
               display: "flex",
               alignItems: "center",
             }}
-            icon={<img src={signOutIcon} alt="Sign Out" style={{ width: 16, height: 16, marginRight: 8 }} />}
+            icon={
+              <img
+                src={signOutIcon}
+                alt="Sign Out"
+                style={{ width: 16, height: 16, marginRight: 8 }}
+              />
+            }
           >
             Sign out
           </Button>
@@ -404,7 +422,10 @@ const Users: React.FC = () => {
             gap: "12px",
           }}
         >
-          <Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel" size="small" />
+          <Avatar
+            src="https://xsgames.co/randomusers/avatar.php?g=pixel"
+            size="small"
+          />
         </Header>
 
         <Content
@@ -426,12 +447,22 @@ const Users: React.FC = () => {
 
           <Table
             columns={columns}
-            dataSource={filteredData.slice((currentPage - 1) * pageSize, currentPage * pageSize)}
+            dataSource={filteredData.slice(
+              (currentPage - 1) * pageSize,
+              currentPage * pageSize
+            )}
             pagination={false}
             bordered={false}
           />
 
-          <div style={{ marginRight: 120, marginTop: 40, display: "flex", justifyContent: "flex-end" }}>
+          <div
+            style={{
+              marginRight: 120,
+              marginTop: 40,
+              display: "flex",
+              justifyContent: "flex-end",
+            }}
+          >
             <CustomPagination
               current={currentPage}
               total={filteredData.length}
