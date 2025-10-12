@@ -65,6 +65,13 @@
       "status": "Active"
     }
   ],
+  "monthlyBudgets": [
+    {
+      "month": "2025-01",
+      "budget": 10000,
+      "id": 1
+    }
+  ],
   "monthlyCategories": [
     {
       "id": 1759974468625,
@@ -108,25 +115,35 @@
           "limit": 121212
         }
       ]
+    },
+    {
+      "id": 1760283749264,
+      "month": "2025-01",
+      "categories": [
+        {
+          "id": 1760283921492,
+          "categoryId": 1,
+          "limit": 10000
+        },
+        {
+          "id": 1760285025205,
+          "categoryId": 3,
+          "limit": 10000
+        },
+        {
+          "id": 1760285333714,
+          "categoryId": 4,
+          "limit": 10000
+        }
+      ]
+    },
+    {
+      "id": 1760283943429,
+      "month": "2025-02",
+      "categories": []
     }
   ],
   "transactions": [
-    {
-      "id": 1,
-      "createdDate": "2025-01-10",
-      "total": 150000,
-      "description": "Tiền ăn sáng",
-      "categoryId": 1,
-      "monthlyCategoryId": 1759974468625
-    },
-    {
-      "id": 2,
-      "createdDate": "2025-01-15",
-      "total": 200000,
-      "description": "Tiền đi chơi",
-      "categoryId": 5,
-      "monthlyCategoryId": 1759974468625
-    },
     {
       "id": 3,
       "createdDate": "2025-02-05",

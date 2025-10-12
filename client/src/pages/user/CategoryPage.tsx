@@ -43,7 +43,7 @@ const CategoryPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [limit, setLimit] = useState("");
   const [month, setMonth] = useState<any>(null);
-  const [remaining] = useState(0);
+  const [remaining, setRemaining] = useState<number>(0);
   const [openDropdown, setOpenDropdown] = useState(false);
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -57,8 +57,7 @@ const CategoryPage: React.FC = () => {
       const res = await fetch("http://localhost:8080/categories");
       const cats = await res.json();
       setCategories(cats);
-    } catch (error) {
-      console.error("Lỗi khi tải categories:", error);
+    } catch {
       message.error("Không thể tải danh mục!");
     }
   };
@@ -91,26 +90,67 @@ const CategoryPage: React.FC = () => {
       }
 
       setMonthlyData(existing);
-    } catch (error) {
-      console.error("Lỗi khi tải/tạo monthly data:", error);
+      await fetchRemainingMoney(selectedMonth, existing.id);
+    } catch {
       message.error("Không thể tải dữ liệu tháng!");
+    }
+  };
+
+  // 🧮 Lấy và tính số tiền còn lại
+  const fetchRemainingMoney = async (
+    selectedMonth: string,
+    monthlyCategoryId: number
+  ) => {
+    try {
+      // Lấy ngân sách tháng
+      const budgetRes = await fetch(
+        `http://localhost:8080/monthlyBudgets?month=${selectedMonth}`
+      );
+      const budgetData = await budgetRes.json();
+      const budgetValue = budgetData[0]?.budget ?? 0;
+
+      // Lấy giao dịch
+      const transRes = await fetch(
+        `http://localhost:8080/transactions?monthlyCategoryId=${monthlyCategoryId}`
+      );
+      const transData = await transRes.json();
+      const totalSpent = transData.reduce(
+        (sum: number, t: any) => sum + (t.total ?? 0),
+        0
+      );
+
+      setRemaining(budgetValue - totalSpent);
+    } catch {
+      setRemaining(0);
     }
   };
 
   useEffect(() => {
     if (month) {
-      const formattedMonth = month.format("MM/YYYY");
+      const formattedMonth = month.format("YYYY-MM");
       fetchMonthlyData(formattedMonth);
     }
   }, [month]);
 
+  // ✅ Validate khi thêm danh mục
   const handleAddCategory = async () => {
     if (!selectedCategory || !limit || !month) {
       message.warning("Vui lòng chọn danh mục, nhập giới hạn và tháng!");
       return;
     }
 
-    const formattedMonth = month.format("MM/YYYY");
+    const formattedMonth = month.format("YYYY-MM");
+    const limitValue = Number(limit);
+
+    if (isNaN(limitValue) || limitValue <= 0) {
+      message.warning("Giới hạn phải là số dương!");
+      return;
+    }
+
+    if (limitValue > remaining) {
+      message.warning("Giới hạn không được vượt quá số tiền còn lại!");
+      return;
+    }
 
     const isExist = monthlyData?.categories.some(
       (c) => c.categoryId === selectedCategory
@@ -124,7 +164,7 @@ const CategoryPage: React.FC = () => {
     const newCat = {
       id: Date.now(),
       categoryId: selectedCategory,
-      limit: Number(limit),
+      limit: limitValue,
     };
 
     try {
@@ -142,8 +182,8 @@ const CategoryPage: React.FC = () => {
       message.success("Thêm danh mục thành công!");
       setSelectedCategory(null);
       setLimit("");
-    } catch (error) {
-      console.error("Lỗi khi thêm danh mục:", error);
+      await fetchRemainingMoney(formattedMonth, monthlyData!.id);
+    } catch {
       message.error("Không thể thêm danh mục!");
     }
   };
@@ -178,11 +218,10 @@ const CategoryPage: React.FC = () => {
           if (!res.ok) throw new Error("Không thể xóa danh mục!");
 
           setMonthlyData({ ...monthlyData, categories: updatedCategories });
-          await fetchMonthlyData(month.format("MM/YYYY"));
+          await fetchMonthlyData(month.format("YYYY-MM"));
           message.success("Đã xóa danh mục thành công!");
-        } catch (error: any) {
-          console.error("Error deleting category:", error);
-          message.error(`Không thể xóa danh mục: ${error.message}`);
+        } catch {
+          message.error("Không thể xóa danh mục!");
         }
       },
     });
@@ -196,7 +235,7 @@ const CategoryPage: React.FC = () => {
   };
   const handleCancelLogout = () => setIsLogoutModalVisible(false);
 
-  const currentMonth = month ? month.format("MM/YYYY") : "";
+  const currentMonth = month ? month.format("YYYY-MM") : "";
   const filteredCategories =
     monthlyData && monthlyData.month === currentMonth
       ? monthlyData.categories
@@ -265,9 +304,12 @@ const CategoryPage: React.FC = () => {
               📊 Quản Lý Tài Chính Cá Nhân
             </Title>
 
+            {/* --- Chỉ hiển thị Số tiền còn lại --- */}
             <div className="card money-card">
-              <Text className="muted">Số tiền còn lại</Text>
-              <div className="big-green">{remaining.toLocaleString()} VND</div>
+              <Text className="muted">💵 Số tiền còn lại</Text>
+              <div className="big-green">
+                {remaining.toLocaleString()} VND
+              </div>
             </div>
 
             <div className="card month-card">

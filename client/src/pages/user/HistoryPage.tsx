@@ -35,61 +35,123 @@ const HistoryPage: React.FC = () => {
   const [searchValue, setSearchValue] = useState("");
   const [openDropdown, setOpenDropdown] = useState(false);
   const [monthlyCategories, setMonthlyCategories] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetchMonthlyCategories();
+    fetchCategories();
   }, []);
+
+  // 🟢 Lấy dữ liệu Categories
+  const fetchCategories = async () => {
+    try {
+      const res = await axios.get("http://localhost:8080/categories");
+      setCategories(res.data);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      message.error("Không thể tải dữ liệu danh mục!");
+    }
+  };
 
   // 🟢 Lấy dữ liệu Monthly Categories
   const fetchMonthlyCategories = async () => {
     try {
       const res = await axios.get("http://localhost:8080/monthlyCategories");
       setMonthlyCategories(res.data);
-    } catch {
+    } catch (error) {
+      console.error("Error fetching monthly categories:", error);
       message.error("Không thể tải dữ liệu tháng!");
     }
   };
 
-  // 🟢 Lấy giao dịch theo MonthlyCategoryId (tùy theo tháng chọn)
-  const fetchTransactions = async (monthId?: number) => {
+  // 🟢 Lấy ngân sách & giao dịch khi chọn tháng
+  const fetchBudgetAndTransactions = async (selectedMonth: string) => {
     try {
-      let url = "http://localhost:8080/transactions";
-      if (monthId) {
-        url += `?monthlyCategoryId=${monthId}`;
-      }
-      const res = await axios.get(url);
-      setTransactions(res.data);
-      calculateRemaining(res.data);
-    } catch {
-      message.error("Không thể tải dữ liệu giao dịch!");
-    }
-  };
+      // Normalize month format to match db.json
+      const normalizedMonth = dayjs(selectedMonth, "MM/YYYY").format("YYYY-MM");
+      const monthDisplay = dayjs(selectedMonth, "MM/YYYY").format("MM/YYYY");
 
-  const calculateRemaining = (data: any[]) => {
-    const total = data.reduce((sum, t) => sum - Number(t.total || 0), 0);
-    setRemainingMoney(total);
+      console.log("Fetching data for month:", normalizedMonth);
+
+      // Fetch budget
+      const budgetRes = await axios.get(
+        `http://localhost:8080/monthlyBudgets?month=${normalizedMonth}`
+      );
+      const budgetValue = budgetRes.data[0]?.budget || 0;
+      console.log("Budget fetched:", budgetValue);
+
+      // Fetch monthlyCategories
+      const monthData = await axios.get(
+        `http://localhost:8080/monthlyCategories?month=${monthDisplay}`
+      );
+      console.log("Monthly categories fetched:", monthData.data);
+
+      if (monthData.data.length === 0) {
+        message.info(`Không có danh mục cho tháng ${monthDisplay}!`);
+        setRemainingMoney(budgetValue);
+        setTransactions([]);
+        setFilteredTransactions([]);
+        return;
+      }
+
+      const monthlyCategory = monthData.data[0];
+      const monthlyCategoryId = monthlyCategory.id;
+      console.log("Monthly Category ID:", monthlyCategoryId);
+
+      // Fetch transactions
+      const transRes = await axios.get(
+        `http://localhost:8080/transactions?monthlyCategoryId=${monthlyCategoryId}`
+      );
+      console.log("Transactions fetched:", transRes.data);
+
+      // Get valid category IDs from monthlyCategories
+      const validCategoryIds = monthlyCategory.categories.map(
+        (cat: any) => cat.categoryId
+      );
+      console.log("Valid Category IDs:", validCategoryIds);
+
+      // Filter transactions
+      const filteredTransactions = transRes.data
+        .filter((t: any) => validCategoryIds.includes(t.categoryId))
+        .map((t: any) => ({
+          ...t,
+          description: t.description || "", // Ensure Note is empty if not provided
+        }));
+
+      console.log("Filtered Transactions:", filteredTransactions);
+
+      setTransactions(filteredTransactions);
+
+      // Calculate remaining money
+      const totalSpent = filteredTransactions.reduce(
+        (sum: number, t: any) => sum + t.total,
+        0
+      );
+      setRemainingMoney(budgetValue - totalSpent);
+      console.log("Remaining Money:", remainingMoney);
+    } catch (error) {
+      console.error("Error fetching budget or transactions:", error);
+      message.error("Không thể tải dữ liệu ngân sách hoặc giao dịch!");
+      setRemainingMoney(0);
+      setTransactions([]);
+      setFilteredTransactions([]);
+    }
   };
 
   // 🟢 Khi chọn tháng => tìm ID tháng tương ứng trong monthlyCategories => lọc transactions
   useEffect(() => {
     if (!month) {
       setFilteredTransactions([]);
+      setRemainingMoney(0);
       return;
     }
 
     const selectedMonth = dayjs(month).format("MM/YYYY");
-    const matched = monthlyCategories.find((m) => m.month === selectedMonth);
-
-    if (matched) {
-      fetchTransactions(matched.id);
-    } else {
-      setTransactions([]);
-      setFilteredTransactions([]);
-    }
+    fetchBudgetAndTransactions(selectedMonth);
   }, [month, monthlyCategories]);
 
-  // 🟢 Cập nhật filteredTransactions khi transactions thay đổi
+  // 🟢 Cập nhật filteredTransactions khi transactions hoặc searchValue thay đổi
   useEffect(() => {
     if (transactions.length === 0) {
       setFilteredTransactions([]);
@@ -122,12 +184,16 @@ const HistoryPage: React.FC = () => {
       return;
     }
 
+    // Ensure the categoryId is one of the valid categories for the selected month
+    const validCategoryIds = matched.categories.map((cat: any) => cat.categoryId);
+    const defaultCategoryId = validCategoryIds[0] || 1; // Fallback to 1 if no valid categories
+
     const newItem = {
       id: Date.now(),
       createdDate: dayjs().format("YYYY-MM-DD"),
       total: Number(amount),
-      description: note || "Giao dịch mới",
-      categoryId: 1,
+      description: note || "", // Note is empty if not provided
+      categoryId: defaultCategoryId,
       monthlyCategoryId: matched.id,
     };
 
@@ -137,7 +203,10 @@ const HistoryPage: React.FC = () => {
       message.success("Đã thêm giao dịch!");
       setAmount("");
       setNote("");
-    } catch {
+      // Cập nhật lại số tiền còn lại
+      fetchBudgetAndTransactions(selectedMonth);
+    } catch (error) {
+      console.error("Error adding transaction:", error);
       message.error("Không thể thêm giao dịch!");
     }
   };
@@ -147,7 +216,11 @@ const HistoryPage: React.FC = () => {
       await axios.delete(`http://localhost:8080/transactions/${id}`);
       setTransactions((prev) => prev.filter((t) => t.id !== id));
       message.success("Đã xóa giao dịch!");
-    } catch {
+      // Cập nhật lại số tiền còn lại
+      const selectedMonth = dayjs(month).format("MM/YYYY");
+      fetchBudgetAndTransactions(selectedMonth);
+    } catch (error) {
+      console.error("Error deleting transaction:", error);
       message.error("Không thể xóa giao dịch!");
     }
   };
@@ -159,20 +232,25 @@ const HistoryPage: React.FC = () => {
       render: (_: any, __: any, index: number) => index + 1,
     },
     {
-      title: "Mô tả",
-      dataIndex: "description",
+      title: "Category",
+      dataIndex: "categoryId",
+      render: (categoryId: number) => {
+        const category = categories.find((cat) => cat.id === categoryId);
+        return category ? category.name : "Không xác định";
+      },
     },
     {
-      title: "Số tiền",
+      title: "Budget",
       dataIndex: "total",
       render: (v: any) => `${v.toLocaleString()} VND`,
     },
     {
-      title: "Ngày tạo",
-      dataIndex: "createdDate",
+      title: "Note",
+      dataIndex: "description",
+      render: (text: string) => text || "—",
     },
     {
-      title: "Thao tác",
+      title: "Actions",
       render: (record: any) => (
         <Popconfirm
           title="Bạn có chắc muốn xóa?"
