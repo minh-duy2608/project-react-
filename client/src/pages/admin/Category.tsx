@@ -49,7 +49,7 @@ const CustomPagination: React.FC<PaginationProps> = ({ current, total, pageSize,
   const totalPages = Math.ceil(total / pageSize);
   const [isPrevClicked, setIsPrevClicked] = useState(false);
   const [isNextClicked, setIsNextClicked] = useState(false);
-  const pagesToShow = [];
+  const pagesToShow: number[] = [];
   let startPage = Math.max(1, current - 2);
   let endPage = Math.min(totalPages, current + 2);
 
@@ -171,7 +171,9 @@ const Category: React.FC = () => {
   const [editUploadedFileName, setEditUploadedFileName] = useState<string | null>(null);
 
   const location = useLocation();
+  const pageSize = 8;
 
+  // Fetch all categories once (client-side pagination)
   useEffect(() => {
     fetch('http://localhost:8080/categories')
       .then(response => response.json())
@@ -179,6 +181,7 @@ const Category: React.FC = () => {
       .catch(error => console.error('Error fetching categories:', error));
   }, []);
 
+  // Menu items kept same UI as original
   const menuItems = [
     {
       key: "/dashboard",
@@ -257,6 +260,7 @@ const Category: React.FC = () => {
     },
   ];
 
+  // Table columns (keep same)
   const columns = [
     { title: "STT", dataIndex: "id", key: "id", width: 70 },
     { title: "Name", dataIndex: "name", key: "name" },
@@ -348,38 +352,42 @@ const Category: React.FC = () => {
     },
   ];
 
+  // Lock/Unlock (keep calling API to persist)
   const handleLockUnlock = (id: number, isLock: boolean) => {
-    setData((prevData) =>
-      prevData.map((item) =>
-        item.id === id
-          ? {
-              ...item,
-              status: isLock ? "Inactive" : "Active",
-            }
-          : item
-      )
+    const updated = data.map((item) =>
+      item.id === id ? { ...item, status: isLock ? "Inactive" : "Active" } : item
     );
-    fetch(`http://localhost:8080/categories/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...data.find(item => item.id === id), status: isLock ? "Inactive" : "Active" }),
-    })
-      .then(response => response.json())
-      .then(() => message.success(`Category ${isLock ? "blocked" : "unblocked"} successfully!`))
-      .catch(error => console.error('Error updating data:', error));
+    setData(updated);
+
+    // update backend
+    const changed = updated.find((item) => item.id === id);
+    if (changed) {
+      fetch(`http://localhost:8080/categories/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(changed),
+      })
+        .then(() => message.success(`Category ${isLock ? "blocked" : "unblocked"} successfully!`))
+        .catch(error => {
+          console.error('Error updating data:', error);
+          message.error("Failed to update status!");
+        });
+    }
   };
 
+  // Search filtered (client-side) — reset page to 1 when search or data change
   const filteredData = data.filter((item) =>
     item.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const pageSize = 8;
-  const totalPages = Math.ceil(filteredData.length / pageSize);
+  // Pagination: client-side logic slice()
+  const paginatedData = filteredData.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
   const showModal = () => {
     setIsModalVisible(true);
   };
 
+  // Add new category (keep API POST)
   const handleOk = () => {
     if (!newCategory.name || !newCategory.image) {
       message.error("Please fill all fields!");
@@ -398,7 +406,7 @@ const Category: React.FC = () => {
         return response.json();
       })
       .then(() => {
-        setData([...data, newCategoryData]);
+        setData(prev => [...prev, newCategoryData]);
         setNewCategory({ name: "", image: "", status: "Active" });
         setUploadedImage(null);
         setUploadedFileName(null);
@@ -418,12 +426,13 @@ const Category: React.FC = () => {
     setIsModalVisible(false);
   };
 
+  // Edit flow
   const handleEdit = (id: number) => {
     const categoryToEdit = data.find(item => item.id === id);
     if (categoryToEdit) {
       setEditCategory({ ...categoryToEdit });
       setEditUploadedImage(categoryToEdit.image);
-      setEditUploadedFileName("existing_image.png"); // Tên file mẫu, có thể thay đổi
+      setEditUploadedFileName("existing_image.png"); // placeholder filename
       setIsEditModalVisible(true);
     }
   };
@@ -433,11 +442,10 @@ const Category: React.FC = () => {
       message.error("Please fill all fields!");
       return;
     }
-    setData((prevData) =>
-      prevData.map((item) =>
-        item.id === editCategory.id ? { ...editCategory } : item
-      )
-    );
+    const updatedList = data.map((item) => (item.id === editCategory.id ? { ...editCategory } : item));
+    setData(updatedList);
+    setIsEditModalVisible(false);
+
     fetch(`http://localhost:8080/categories/${editCategory.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -448,7 +456,6 @@ const Category: React.FC = () => {
         return response.json();
       })
       .then(() => {
-        setIsEditModalVisible(false);
         message.success("Category edited successfully!");
       })
       .catch(error => {
@@ -464,6 +471,7 @@ const Category: React.FC = () => {
     setIsEditModalVisible(false);
   };
 
+  // Input handlers
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewCategory({ ...newCategory, name: e.target.value });
   };
@@ -488,6 +496,7 @@ const Category: React.FC = () => {
     setEditCategory({ ...editCategory, status: value });
   };
 
+  // Upload handlers
   const handleUpload = (file: File) => {
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -523,6 +532,11 @@ const Category: React.FC = () => {
     setEditUploadedFileName(null);
     setEditCategory({ ...editCategory, image: "" });
   };
+
+  // When search term changes, reset to first page (so user sees first results)
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
 
   return (
     <Layout style={{ minHeight: "100vh", background: "#fff" }}>
@@ -625,9 +639,10 @@ const Category: React.FC = () => {
 
           <Table
             columns={columns}
-            dataSource={filteredData.slice((currentPage - 1) * pageSize, currentPage * pageSize)}
+            dataSource={paginatedData}
             pagination={false}
             bordered={false}
+            rowKey="id"
           />
 
           <div style={{ marginRight: 120, marginTop: 40, display: "flex", justifyContent: "flex-end" }}>

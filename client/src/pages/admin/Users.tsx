@@ -19,13 +19,13 @@ import signOutIcon from "../../icons/SignOutIcon.png";
 
 const { Header, Sider, Content } = Layout;
 
+// ✅ CustomPagination giữ nguyên UI cũ
 interface PaginationProps {
   current: number;
   total: number;
   pageSize: number;
   onChange: (page: number) => void;
 }
-
 const CustomPagination: React.FC<PaginationProps> = ({
   current,
   total,
@@ -35,6 +35,7 @@ const CustomPagination: React.FC<PaginationProps> = ({
   const totalPages = Math.ceil(total / pageSize);
   const [isPrevClicked, setIsPrevClicked] = useState(false);
   const [isNextClicked, setIsNextClicked] = useState(false);
+
   const pagesToShow = [];
   let startPage = Math.max(1, current - 2);
   let endPage = Math.min(totalPages, current + 2);
@@ -75,11 +76,6 @@ const CustomPagination: React.FC<PaginationProps> = ({
           background: isPrevClicked ? "#4338CA" : "transparent",
           color: isPrevClicked ? "#fff" : "#000",
           cursor: current === 1 ? "default" : "pointer",
-          outline: "none",
-          padding: 0,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
         }}
         onClick={handlePrevClick}
         disabled={current === 1}
@@ -97,13 +93,7 @@ const CustomPagination: React.FC<PaginationProps> = ({
             borderRadius: 4,
             background: current === page ? "#4338CA" : "transparent",
             color: current === page ? "#fff" : "#000",
-            margin: "0 4px",
             cursor: "pointer",
-            outline: "none",
-            padding: 0,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
           }}
           onClick={() => onChange(page)}
         >
@@ -120,11 +110,6 @@ const CustomPagination: React.FC<PaginationProps> = ({
           background: isNextClicked ? "#4338CA" : "transparent",
           color: isNextClicked ? "#fff" : "#000",
           cursor: current === totalPages ? "default" : "pointer",
-          outline: "none",
-          padding: 0,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
         }}
         onClick={handleNextClick}
         disabled={current === totalPages}
@@ -134,6 +119,8 @@ const CustomPagination: React.FC<PaginationProps> = ({
     </div>
   );
 };
+
+// ================================
 
 interface User {
   id: number;
@@ -145,110 +132,60 @@ interface User {
 }
 
 const Users: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [data, setData] = useState<User[]>([]);
   const location = useLocation();
+  const [data, setData] = useState<User[]>([]);
+  const [filteredData, setFilteredData] = useState<User[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 8;
 
+  // ✅ Lấy dữ liệu 1 lần duy nhất (fetch all)
   useEffect(() => {
     fetch("http://localhost:8080/profiles")
-      .then((response) => response.json())
-      .then((data) => setData(data))
-      .catch((error) => console.error("Error fetching data:", error));
+      .then((res) => res.json())
+      .then((res) => {
+        setData(res);
+        setFilteredData(res);
+      })
+      .catch(() => message.error("Không thể tải danh sách người dùng!"));
   }, []);
 
-const menuItems = [
-  {
-    key: "/dashboard",
-    label: (
-      <Link
-        to="/dashboard"
-        style={{
-          color: location.pathname === "/dashboard" ? "#4338CA" : "#000",
-          fontWeight: location.pathname === "/dashboard" ? 700 : 600,
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
-        <img
-          src={dashboardIcon}
-          alt="Dashboard"
-          style={{
-            width: 16,
-            height: 16,
-            marginRight: 8,
-            filter: location.pathname === "/dashboard" ? "none" : "grayscale(100%)",
-          }}
-        />
-        Dashboard
-      </Link>
-    ),
-    style: {
-      borderBottom: location.pathname === "/dashboard" ? "1px solid #4338CA" : "none",
-      padding: "8px 16px",
-    },
-  },
-  {
-    key: "/users",
-    label: (
-      <Link
-        to="/users"
-        style={{
-          color: location.pathname === "/users" ? "#4338CA" : "#000",
-          fontWeight: location.pathname === "/users" ? 700 : 600,
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
-        <img
-          src={userIcon}
-          alt="Users"
-          style={{
-            width: 16,
-            height: 16,
-            marginRight: 8,
-            filter: location.pathname === "/users" ? "none" : "grayscale(100%)",
-          }}
-        />
-        Users
-      </Link>
-    ),
-    style: {
-      borderBottom: location.pathname === "/users" ? "1px solid #4338CA" : "none",
-      padding: "8px 16px",
-    },
-  },
-  {
-    key: "/category",
-    label: (
-      <Link
-        to="/category"
-        style={{
-          color: location.pathname === "/category" ? "#4338CA" : "#000",
-          fontWeight: location.pathname === "/category" ? 700 : 600,
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
-        <img
-          src={categoryIcon}
-          alt="Category"
-          style={{
-            width: 16,
-            height: 16,
-            marginRight: 8,
-            filter: location.pathname === "/category" ? "none" : "grayscale(100%)",
-          }}
-        />
-        Category
-      </Link>
-    ),
-    style: {
-      borderBottom: location.pathname === "/category" ? "1px solid #4338CA" : "none",
-      padding: "8px 16px",
-    },
-  },
-];
+  // ✅ Lọc theo ô tìm kiếm (không gọi API)
+  useEffect(() => {
+    const filtered = data.filter((item) =>
+      item.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredData(filtered);
+    setCurrentPage(1);
+  }, [searchTerm, data]);
+
+  // ✅ Xử lý khóa/mở tài khoản
+  const handleLockUnlock = (id: number, isLock: boolean) => {
+    const updated = data.map((item) =>
+      item.id === id
+        ? { ...item, status: isLock ? "Deactivate" : "Active" }
+        : item
+    );
+    setData(updated);
+    setFilteredData(updated);
+
+    // Vẫn lưu vào db.json để giữ dữ liệu
+    fetch(`http://localhost:8080/profiles/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updated.find((i) => i.id === id)),
+    })
+      .then(() =>
+        message.success(`User ${isLock ? "locked" : "unlocked"} successfully!`)
+      )
+      .catch(() => message.error("Lỗi khi cập nhật trạng thái!"));
+  };
+
+  // ✅ Phân trang logic
+  const paginatedData = filteredData.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
 
   const columns = [
     { title: "STT", dataIndex: "id", key: "id", width: 70 },
@@ -261,43 +198,31 @@ const menuItems = [
       dataIndex: "status",
       key: "status",
       render: (status: string) => (
-        <div
+        <span
           style={{
-            display: "flex",
+            display: "inline-flex",
             alignItems: "center",
-            height: "100%", // 🔥 canh thẳng hàng với header
+            gap: 6,
+            padding: "4px 10px",
+            borderRadius: "12px",
+            fontWeight: 500,
+            backgroundColor:
+              status === "Active"
+                ? "rgba(82,196,26,0.1)"
+                : "rgba(255,77,79,0.1)",
+            color: status === "Active" ? "#52c41a" : "#ff4d4f",
           }}
         >
           <span
             style={{
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 6,
-              width: 110,
-              height: 28,
-              backgroundColor:
-                status === "Active"
-                  ? "rgba(82,196,26,0.1)"
-                  : "rgba(255,77,79,0.1)",
-              color: status === "Active" ? "#52c41a" : "#ff4d4f",
-              borderRadius: "12px",
-              fontSize: "13px",
-              fontWeight: 500,
+              width: 6,
+              height: 6,
+              borderRadius: "50%",
+              backgroundColor: status === "Active" ? "#52c41a" : "#ff4d4f",
             }}
-          >
-            <span
-              style={{
-                width: 6,
-                height: 6,
-                borderRadius: "50%",
-                backgroundColor:
-                  status === "Active" ? "#52c41a" : "#ff4d4f",
-              }}
-            />
-            {status}
-          </span>
-        </div>
+          />
+          {status}
+        </span>
       ),
     },
     {
@@ -308,59 +233,109 @@ const menuItems = [
           src={record.status === "Active" ? unlockIcon : lockIcon}
           alt={record.status === "Active" ? "Unlock" : "Lock"}
           style={{ width: 15, height: 20, cursor: "pointer" }}
-          onClick={() =>
-            handleLockUnlock(record.id, record.status === "Active")
-          }
+          onClick={() => handleLockUnlock(record.id, record.status === "Active")}
         />
       ),
     },
   ];
 
-  const handleLockUnlock = (id: number, isLock: boolean) => {
-    const updated = data.map((item) =>
-      item.id === id
-        ? { ...item, status: isLock ? "Deactivate" : "Active" }
-        : item
-    );
-    setData(updated);
-
-    fetch(`http://localhost:8080/profiles/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(
-        updated.find((item) => item.id === id)
+  // ✅ Menu trái giữ nguyên UI cũ
+  const menuItems = [
+    {
+      key: "/dashboard",
+      label: (
+        <Link
+          to="/dashboard"
+          style={{
+            color: location.pathname === "/dashboard" ? "#4338CA" : "#000",
+            fontWeight: location.pathname === "/dashboard" ? 700 : 600,
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <img
+            src={dashboardIcon}
+            alt="Dashboard"
+            style={{
+              width: 16,
+              height: 16,
+              marginRight: 8,
+              filter: location.pathname === "/dashboard" ? "none" : "grayscale(100%)",
+            }}
+          />
+          Dashboard
+        </Link>
       ),
-    })
-      .then((response) => response.json())
-      .then(() =>
-        message.success(`User ${isLock ? "locked" : "unlocked"} successfully!`)
-      )
-      .catch((error) => console.error("Error updating data:", error));
-  };
-
-  const filteredData = data.filter((item) =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const pageSize = 8;
+    },
+    {
+      key: "/users",
+      label: (
+        <Link
+          to="/users"
+          style={{
+            color: location.pathname === "/users" ? "#4338CA" : "#000",
+            fontWeight: location.pathname === "/users" ? 700 : 600,
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <img
+            src={userIcon}
+            alt="Users"
+            style={{
+              width: 16,
+              height: 16,
+              marginRight: 8,
+              filter: location.pathname === "/users" ? "none" : "grayscale(100%)",
+            }}
+          />
+          Users
+        </Link>
+      ),
+    },
+    {
+      key: "/category",
+      label: (
+        <Link
+          to="/category"
+          style={{
+            color: location.pathname === "/category" ? "#4338CA" : "#000",
+            fontWeight: location.pathname === "/category" ? 700 : 600,
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <img
+            src={categoryIcon}
+            alt="Category"
+            style={{
+              width: 16,
+              height: 16,
+              marginRight: 8,
+              filter: location.pathname === "/category" ? "none" : "grayscale(100%)",
+            }}
+          />
+          Category
+        </Link>
+      ),
+    },
+  ];
 
   return (
     <Layout style={{ minHeight: "100vh", background: "#fff" }}>
-      <Sider
-        width={240}
-        style={{ background: "#fff", borderRight: "1px solid #f0f0f0" }}
-      >
+      {/* Sidebar */}
+      <Sider width={240} style={{ background: "#fff", borderRight: "1px solid #f0f0f0" }}>
         <div
           style={{
-            height: "40px",
+            height: 40,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             borderBottom: "1px solid #f0f0f0",
           }}
         >
-          <div style={{ fontSize: "16px", fontWeight: "bold" }}>
-            <span style={{ color: "#000" }}>Financial</span>{" "}
+          <div style={{ fontSize: 16, fontWeight: "bold" }}>
+            <span>Financial </span>
             <span style={{ color: "#4338CA" }}>Manager</span>
           </div>
         </div>
@@ -368,75 +343,37 @@ const menuItems = [
         <Menu
           mode="inline"
           selectedKeys={[location.pathname]}
-          defaultSelectedKeys={["/users"]}
           items={menuItems}
-          style={{ borderRight: 0, marginTop: "16px" }}
-          inlineIndent={0}
+          style={{ marginTop: 16, borderRight: 0 }}
         />
 
-        <div
-          style={{
-            position: "absolute",
-            bottom: "0px",
-            left: -100,
-            right: 0,
-          }}
-        >
+        <div style={{ position: "absolute", bottom: 16, left: 20 }}>
           <Button
             type="link"
-            block
-            style={{
-              height: "40px",
-              color: "#000000",
-              border: "1px solid #f0f0f0",
-              borderRadius: "6px",
-              textAlign: "left",
-              paddingLeft: "12px",
-              fontWeight: 500,
-              display: "flex",
-              alignItems: "center",
-            }}
-            icon={
-              <img
-                src={signOutIcon}
-                alt="Sign Out"
-                style={{ width: 16, height: 16, marginRight: 8 }}
-              />
-            }
+            icon={<img src={signOutIcon} alt="Sign Out" width={16} />}
+            style={{ color: "#000" }}
           >
             Sign out
           </Button>
         </div>
       </Sider>
 
+      {/* Content */}
       <Layout style={{ background: "#fff" }}>
         <Header
           style={{
-            height: "50px",
-            padding: "0 24px",
             background: "#fff",
             borderBottom: "1px solid #f0f0f0",
             display: "flex",
-            alignItems: "center",
             justifyContent: "flex-end",
-            gap: "12px",
+            paddingRight: 24,
           }}
         >
-          <Avatar
-            src="https://xsgames.co/randomusers/avatar.php?g=pixel"
-            size="small"
-          />
+          <Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel" />
         </Header>
 
-        <Content
-          style={{
-            margin: "24px",
-            padding: "24px",
-            background: "#fff",
-            minHeight: "calc(100vh - 100px)",
-          }}
-        >
-          <div style={{ marginBottom: 36, textAlign: "right", marginTop: 36 }}>
+        <Content style={{ margin: 24, padding: 24, background: "#fff" }}>
+          <div style={{ marginBottom: 36, textAlign: "right" }}>
             <Input
               placeholder="Search here..."
               suffix={<SearchOutlined />}
@@ -447,20 +384,17 @@ const menuItems = [
 
           <Table
             columns={columns}
-            dataSource={filteredData.slice(
-              (currentPage - 1) * pageSize,
-              currentPage * pageSize
-            )}
+            dataSource={paginatedData}
             pagination={false}
-            bordered={false}
+            rowKey="id"
           />
 
           <div
             style={{
-              marginRight: 120,
               marginTop: 40,
               display: "flex",
               justifyContent: "flex-end",
+              marginRight: 120,
             }}
           >
             <CustomPagination

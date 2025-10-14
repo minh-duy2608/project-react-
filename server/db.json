@@ -68,8 +68,13 @@
   "monthlyBudgets": [
     {
       "month": "2025-01",
-      "budget": 10000,
+      "budget": 500000,
       "id": 1
+    },
+    {
+      "month": "2025-02",
+      "budget": 500000,
+      "id": 2
     }
   ],
   "monthlyCategories": [
@@ -134,6 +139,26 @@
           "id": 1760285333714,
           "categoryId": 4,
           "limit": 10000
+        },
+        {
+          "id": 1760323056330,
+          "categoryId": 5,
+          "limit": 10000
+        },
+        {
+          "id": 1760323062097,
+          "categoryId": 6,
+          "limit": 10000
+        },
+        {
+          "id": 1760323068078,
+          "categoryId": 7,
+          "limit": 10000
+        },
+        {
+          "id": 1760323073690,
+          "categoryId": 2,
+          "limit": 10000
         }
       ]
     },
@@ -151,6 +176,22 @@
       "description": "Tiền xăng xe",
       "categoryId": 7,
       "monthlyCategoryId": 1759976518633
+    },
+    {
+      "id": 1760315410031,
+      "createdDate": "2025-10-13",
+      "total": 10000,
+      "description": "đi ăn ",
+      "categoryId": 1,
+      "monthlyCategoryId": 1760283749264
+    },
+    {
+      "id": 1760322712997,
+      "createdDate": "2025-10-13",
+      "total": 10,
+      "description": "",
+      "categoryId": 3,
+      "monthlyCategoryId": 1760283749264
     }
   ]
 }

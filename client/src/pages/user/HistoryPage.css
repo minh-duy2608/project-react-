@@ -82,3 +82,48 @@
   cursor: default !important;
   pointer-events: none !important;
 }
+
+.warning-modal {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #1d2a48;
+  color: white;
+  padding: 16px 20px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  animation: fadeInOut 2s forwards;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 16px;
+  gap: 10px;
+}
+
+.warning-modal svg {
+  color: #ffa500;
+  font-size: 20px;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  10%,
+  90% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}

@@ -8,12 +8,14 @@ import {
   message,
   Popconfirm,
   Empty,
+  Select,
 } from "antd";
 import {
   InfoCircleOutlined,
   BarsOutlined,
   HistoryOutlined,
   DeleteOutlined,
+  AlertOutlined,
 } from "@ant-design/icons";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
@@ -21,6 +23,7 @@ import dayjs from "dayjs";
 import "./HistoryPage.css";
 
 const { Title, Text } = Typography;
+const { Option } = Select;
 
 const HistoryPage: React.FC = () => {
   const navigate = useNavigate();
@@ -36,57 +39,51 @@ const HistoryPage: React.FC = () => {
   const [openDropdown, setOpenDropdown] = useState(false);
   const [monthlyCategories, setMonthlyCategories] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [showWarning, setShowWarning] = useState(false);
+  const [warningMessage, setWarningMessage] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // ✅ Phân trang logic (client-side)
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   useEffect(() => {
     fetchMonthlyCategories();
     fetchCategories();
   }, []);
 
-  // 🟢 Lấy dữ liệu Categories
   const fetchCategories = async () => {
     try {
       const res = await axios.get("http://localhost:8080/categories");
       setCategories(res.data);
-    } catch (error) {
-      console.error("Error fetching categories:", error);
+    } catch {
       message.error("Không thể tải dữ liệu danh mục!");
     }
   };
 
-  // 🟢 Lấy dữ liệu Monthly Categories
   const fetchMonthlyCategories = async () => {
     try {
       const res = await axios.get("http://localhost:8080/monthlyCategories");
       setMonthlyCategories(res.data);
-    } catch (error) {
-      console.error("Error fetching monthly categories:", error);
+    } catch {
       message.error("Không thể tải dữ liệu tháng!");
     }
   };
 
-  // 🟢 Lấy ngân sách & giao dịch khi chọn tháng
   const fetchBudgetAndTransactions = async (selectedMonth: string) => {
     try {
-      // Normalize month format to match db.json
       const normalizedMonth = dayjs(selectedMonth, "MM/YYYY").format("YYYY-MM");
       const monthDisplay = dayjs(selectedMonth, "MM/YYYY").format("MM/YYYY");
 
-      console.log("Fetching data for month:", normalizedMonth);
-
-      // Fetch budget
       const budgetRes = await axios.get(
         `http://localhost:8080/monthlyBudgets?month=${normalizedMonth}`
       );
       const budgetValue = budgetRes.data[0]?.budget || 0;
-      console.log("Budget fetched:", budgetValue);
 
-      // Fetch monthlyCategories
       const monthData = await axios.get(
-        `http://localhost:8080/monthlyCategories?month=${monthDisplay}`
+        `http://localhost:8080/monthlyCategories?month=${normalizedMonth}`
       );
-      console.log("Monthly categories fetched:", monthData.data);
-
       if (monthData.data.length === 0) {
         message.info(`Không có danh mục cho tháng ${monthDisplay}!`);
         setRemainingMoney(budgetValue);
@@ -97,61 +94,56 @@ const HistoryPage: React.FC = () => {
 
       const monthlyCategory = monthData.data[0];
       const monthlyCategoryId = monthlyCategory.id;
-      console.log("Monthly Category ID:", monthlyCategoryId);
 
-      // Fetch transactions
       const transRes = await axios.get(
         `http://localhost:8080/transactions?monthlyCategoryId=${monthlyCategoryId}`
       );
-      console.log("Transactions fetched:", transRes.data);
 
-      // Get valid category IDs from monthlyCategories
-      const validCategoryIds = monthlyCategory.categories.map(
-        (cat: any) => cat.categoryId
-      );
-      console.log("Valid Category IDs:", validCategoryIds);
+      const allData = monthlyCategory.categories.map((catItem: any) => {
+        const categoryInfo = categories.find(
+          (c) => c.id === catItem.categoryId
+        );
+        const transaction = transRes.data.find(
+          (t: any) => t.categoryId === catItem.categoryId
+        );
+        return {
+          id: catItem.id,
+          categoryId: catItem.categoryId,
+          categoryName: categoryInfo ? categoryInfo.name : "Không xác định",
+          total: transaction ? transaction.total : 0,
+          description: transaction ? transaction.description : "—",
+          limit: catItem.limit,
+        };
+      });
 
-      // Filter transactions
-      const filteredTransactions = transRes.data
-        .filter((t: any) => validCategoryIds.includes(t.categoryId))
-        .map((t: any) => ({
-          ...t,
-          description: t.description || "", // Ensure Note is empty if not provided
-        }));
-
-      console.log("Filtered Transactions:", filteredTransactions);
-
-      setTransactions(filteredTransactions);
-
-      // Calculate remaining money
-      const totalSpent = filteredTransactions.reduce(
+      const totalSpent = transRes.data.reduce(
         (sum: number, t: any) => sum + t.total,
         0
       );
-      setRemainingMoney(budgetValue - totalSpent);
-      console.log("Remaining Money:", remainingMoney);
+      const remaining = budgetValue - totalSpent;
+
+      setTransactions(allData);
+      setRemainingMoney(remaining >= 0 ? remaining : 0);
+      setCurrentPage(1);
     } catch (error) {
-      console.error("Error fetching budget or transactions:", error);
-      message.error("Không thể tải dữ liệu ngân sách hoặc giao dịch!");
+      console.error("Error fetching data:", error);
+      message.error("Không thể tải dữ liệu!");
       setRemainingMoney(0);
       setTransactions([]);
       setFilteredTransactions([]);
     }
   };
 
-  // 🟢 Khi chọn tháng => tìm ID tháng tương ứng trong monthlyCategories => lọc transactions
   useEffect(() => {
     if (!month) {
       setFilteredTransactions([]);
       setRemainingMoney(0);
       return;
     }
-
     const selectedMonth = dayjs(month).format("MM/YYYY");
     fetchBudgetAndTransactions(selectedMonth);
   }, [month, monthlyCategories]);
 
-  // 🟢 Cập nhật filteredTransactions khi transactions hoặc searchValue thay đổi
   useEffect(() => {
     if (transactions.length === 0) {
       setFilteredTransactions([]);
@@ -159,54 +151,87 @@ const HistoryPage: React.FC = () => {
     }
 
     const filtered = transactions.filter((t) =>
-      t.description?.toLowerCase().includes(searchValue.toLowerCase())
+      t.categoryName?.toLowerCase().includes(searchValue.toLowerCase())
     );
 
-    setFilteredTransactions(filtered.sort((a, b) => b.total - a.total));
+    setFilteredTransactions(filtered.sort((a, b) => a.total - b.total));
+    setCurrentPage(1);
   }, [transactions, searchValue]);
 
+  const triggerWarning = (
+    categoryName: string,
+    spent: number,
+    limit: number
+  ) => {
+    setWarningMessage(
+      `Danh mục "${categoryName}" đã vượt giới hạn: ${spent.toLocaleString()} / ${limit.toLocaleString()} VND`
+    );
+    setShowWarning(true);
+    setTimeout(() => setShowWarning(false), 2000);
+  };
+
   const handleAdd = async () => {
-    if (!amount) {
-      message.warning("Vui lòng nhập số tiền!");
+    if (!amount || !month || !selectedCategory) {
+      message.warning("Vui lòng chọn danh mục và nhập đầy đủ thông tin!");
       return;
     }
 
-    if (!month) {
-      message.warning("Vui lòng chọn tháng trước khi thêm giao dịch!");
+    const amountValue = Number(amount);
+    if (isNaN(amountValue) || amountValue <= 0) {
+      message.warning("Số tiền phải lớn hơn 0!");
       return;
     }
 
-    const selectedMonth = dayjs(month).format("MM/YYYY");
-    const matched = monthlyCategories.find((m) => m.month === selectedMonth);
-
+    const normalizedMonth = dayjs(month).format("YYYY-MM");
+    const matched = monthlyCategories.find((m) => m.month === normalizedMonth);
     if (!matched) {
       message.warning("Tháng này chưa được tạo trong hệ thống!");
       return;
     }
 
-    // Ensure the categoryId is one of the valid categories for the selected month
-    const validCategoryIds = matched.categories.map((cat: any) => cat.categoryId);
-    const defaultCategoryId = validCategoryIds[0] || 1; // Fallback to 1 if no valid categories
+    const categoryData = matched.categories.find(
+      (cat: any) => cat.categoryId === selectedCategory
+    );
+    const limit = categoryData?.limit || 0;
+    if (limit < 1) {
+      message.warning("Danh mục này không có giới hạn chi tiêu!");
+      return;
+    }
+
+    const transRes = await axios.get(
+      `http://localhost:8080/transactions?monthlyCategoryId=${matched.id}&categoryId=${selectedCategory}`
+    );
+
+    const totalSpent = transRes.data.reduce(
+      (sum: number, t: any) => sum + t.total,
+      0
+    );
+
+    if (totalSpent + amountValue > limit) {
+      const categoryName =
+        categories.find((c) => c.id === selectedCategory)?.name ||
+        "Không xác định";
+      triggerWarning(categoryName, totalSpent + amountValue, limit);
+      return;
+    }
 
     const newItem = {
       id: Date.now(),
       createdDate: dayjs().format("YYYY-MM-DD"),
-      total: Number(amount),
-      description: note || "", // Note is empty if not provided
-      categoryId: defaultCategoryId,
+      total: amountValue,
+      description: note || "",
+      categoryId: selectedCategory,
       monthlyCategoryId: matched.id,
     };
 
     try {
       await axios.post("http://localhost:8080/transactions", newItem);
-      setTransactions([...transactions, newItem]);
       message.success("Đã thêm giao dịch!");
       setAmount("");
       setNote("");
-      // Cập nhật lại số tiền còn lại
-      fetchBudgetAndTransactions(selectedMonth);
-    } catch (error) {
-      console.error("Error adding transaction:", error);
+      setSelectedCategory(null);
+      fetchBudgetAndTransactions(dayjs(month).format("MM/YYYY"));
+    } catch {
       message.error("Không thể thêm giao dịch!");
     }
   };
@@ -214,13 +239,9 @@ const HistoryPage: React.FC = () => {
   const handleDelete = async (id: number) => {
     try {
       await axios.delete(`http://localhost:8080/transactions/${id}`);
-      setTransactions((prev) => prev.filter((t) => t.id !== id));
       message.success("Đã xóa giao dịch!");
-      // Cập nhật lại số tiền còn lại
-      const selectedMonth = dayjs(month).format("MM/YYYY");
-      fetchBudgetAndTransactions(selectedMonth);
-    } catch (error) {
-      console.error("Error deleting transaction:", error);
+      fetchBudgetAndTransactions(dayjs(month).format("MM/YYYY"));
+    } catch {
       message.error("Không thể xóa giao dịch!");
     }
   };
@@ -229,15 +250,12 @@ const HistoryPage: React.FC = () => {
     {
       title: "STT",
       dataIndex: "index",
-      render: (_: any, __: any, index: number) => index + 1,
+      render: (_: any, __: any, index: number) =>
+        (currentPage - 1) * itemsPerPage + index + 1,
     },
     {
       title: "Category",
-      dataIndex: "categoryId",
-      render: (categoryId: number) => {
-        const category = categories.find((cat) => cat.id === categoryId);
-        return category ? category.name : "Không xác định";
-      },
+      dataIndex: "categoryName",
     },
     {
       title: "Budget",
@@ -264,12 +282,16 @@ const HistoryPage: React.FC = () => {
     },
   ];
 
-  const isInformation = location.pathname === "/information";
-  const isCategory = location.pathname === "/categoryUser";
-  const isHistory = location.pathname === "/history";
+  // ✅ Chỉ xử lý dữ liệu bằng logic
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedData = filteredTransactions.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
 
   return (
     <div className="page-root">
+      {/* Giữ nguyên toàn bộ UI và CSS */}
       <header className="app-header">
         <div className="header-left">📒 Tài Chính Cá Nhân K24_Rikkei</div>
         <div
@@ -296,11 +318,14 @@ const HistoryPage: React.FC = () => {
       </header>
 
       <div className="main-wrap">
+        {/* sidebar giữ nguyên */}
         <aside className="sidebar">
           <Button
             icon={<InfoCircleOutlined />}
             block
-            className={`side-btn ${isInformation ? "active" : ""}`}
+            className={`side-btn ${
+              location.pathname === "/information" ? "active" : ""
+            }`}
             onClick={() => navigate("/information")}
           >
             Information
@@ -308,7 +333,9 @@ const HistoryPage: React.FC = () => {
           <Button
             icon={<BarsOutlined />}
             block
-            className={`side-btn ${isCategory ? "active" : ""}`}
+            className={`side-btn ${
+              location.pathname === "/categoryUser" ? "active" : ""
+            }`}
             onClick={() => navigate("/categoryUser")}
           >
             Category
@@ -316,13 +343,16 @@ const HistoryPage: React.FC = () => {
           <Button
             icon={<HistoryOutlined />}
             block
-            className={`side-btn ${isHistory ? "active" : ""}`}
+            className={`side-btn ${
+              location.pathname === "/history" ? "active" : ""
+            }`}
             onClick={() => navigate("/history")}
           >
             History
           </Button>
         </aside>
 
+        {/* phần content giữ nguyên */}
         <section className="content">
           <div className="banner">
             <div className="banner-title">💸 Lịch sử chi tiêu hàng tháng</div>
@@ -336,6 +366,7 @@ const HistoryPage: React.FC = () => {
               📊 Quản Lý Giao Dịch
             </Title>
 
+            {/* giữ nguyên layout + Table UI */}
             <div className="container-fixed">
               <div className="card money-card">
                 <Text className="muted">Số tiền còn lại</Text>
@@ -363,27 +394,18 @@ const HistoryPage: React.FC = () => {
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                 />
-                <Input
-                  placeholder="Tiền chi tiêu"
-                  style={{
-                    width: "30%",
-                    background: "#DEE2E6",
-                    border: "1px solid #DEE2E6",
-                    color: "#111",
-                    fontWeight: 600,
-                    pointerEvents: "none",
-                  }}
-                  value={
-                    month
-                      ? monthlyCategories.find(
-                          (m) => m.month === dayjs(month).format("MM/YYYY")
-                        )
-                        ? "Tiền chi tiêu"
-                        : "Chưa có danh mục"
-                      : "Chọn tháng"
-                  }
-                  readOnly
-                />
+                <Select
+                  placeholder="Chọn danh mục"
+                  style={{ width: "30%" }}
+                  value={selectedCategory ?? undefined}
+                  onChange={(value) => setSelectedCategory(value)}
+                >
+                  {transactions.map((cat) => (
+                    <Option key={cat.categoryId} value={cat.categoryId}>
+                      {cat.categoryName}
+                    </Option>
+                  ))}
+                </Select>
                 <Input
                   placeholder="Ghi chú"
                   style={{ width: "30%" }}
@@ -405,7 +427,7 @@ const HistoryPage: React.FC = () => {
                   <div className="table-actions">
                     <Button className="sort-btn">Sắp xếp theo giá</Button>
                     <Input.Search
-                      placeholder="Tìm nội dung"
+                      placeholder="Tìm theo tên danh mục"
                       style={{ width: 240 }}
                       onSearch={setSearchValue}
                       allowClear
@@ -416,8 +438,13 @@ const HistoryPage: React.FC = () => {
                 {filteredTransactions.length > 0 ? (
                   <Table
                     columns={columns}
-                    dataSource={filteredTransactions}
-                    pagination={{ pageSize: 5 }}
+                    dataSource={paginatedData}
+                    pagination={{
+                      current: currentPage,
+                      pageSize: itemsPerPage,
+                      total: filteredTransactions.length,
+                      onChange: (page) => setCurrentPage(page),
+                    }}
                     rowKey="id"
                   />
                 ) : (
@@ -435,6 +462,17 @@ const HistoryPage: React.FC = () => {
           </div>
         </section>
       </div>
+
+      {/* cảnh báo giữ nguyên */}
+      {showWarning && (
+        <div className="warning-modal">
+          <AlertOutlined />
+          <div>
+            <strong>Cảnh báo tài chính</strong>
+            <div>{warningMessage}</div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

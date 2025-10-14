@@ -96,20 +96,17 @@ const CategoryPage: React.FC = () => {
     }
   };
 
-  // 🧮 Lấy và tính số tiền còn lại
   const fetchRemainingMoney = async (
     selectedMonth: string,
     monthlyCategoryId: number
   ) => {
     try {
-      // Lấy ngân sách tháng
       const budgetRes = await fetch(
         `http://localhost:8080/monthlyBudgets?month=${selectedMonth}`
       );
       const budgetData = await budgetRes.json();
       const budgetValue = budgetData[0]?.budget ?? 0;
 
-      // Lấy giao dịch
       const transRes = await fetch(
         `http://localhost:8080/transactions?monthlyCategoryId=${monthlyCategoryId}`
       );
@@ -132,7 +129,7 @@ const CategoryPage: React.FC = () => {
     }
   }, [month]);
 
-  // ✅ Validate khi thêm danh mục
+  // ✅ Sửa phần kiểm tra giới hạn tổng
   const handleAddCategory = async () => {
     if (!selectedCategory || !limit || !month) {
       message.warning("Vui lòng chọn danh mục, nhập giới hạn và tháng!");
@@ -147,15 +144,25 @@ const CategoryPage: React.FC = () => {
       return;
     }
 
-    if (limitValue > remaining) {
-      message.warning("Giới hạn không được vượt quá số tiền còn lại!");
+    // ✅ Lấy ngân sách tháng
+    const budgetRes = await fetch(
+      `http://localhost:8080/monthlyBudgets?month=${formattedMonth}`
+    );
+    const budgetData = await budgetRes.json();
+    const budgetValue = budgetData[0]?.budget ?? 0;
+
+    // ✅ Tính tổng limit hiện tại
+    const totalCurrentLimit =
+      monthlyData?.categories.reduce((sum, c) => sum + c.limit, 0) || 0;
+
+    if (totalCurrentLimit + limitValue > budgetValue) {
+      message.warning("Tổng giới hạn các danh mục vượt quá ngân sách tháng!");
       return;
     }
 
     const isExist = monthlyData?.categories.some(
       (c) => c.categoryId === selectedCategory
     );
-
     if (isExist) {
       message.warning("Danh mục này đã tồn tại trong tháng!");
       return;
@@ -188,44 +195,7 @@ const CategoryPage: React.FC = () => {
     }
   };
 
-  const handleDelete = async (id: number) => {
-    if (!monthlyData) {
-      message.error("Không có dữ liệu tháng để xóa danh mục!");
-      return;
-    }
-
-    Modal.confirm({
-      title: "Xác nhận xóa danh mục",
-      content: "Bạn có chắc chắn muốn xóa danh mục này không?",
-      okText: "Xóa",
-      cancelText: "Hủy",
-      okButtonProps: { danger: true },
-      async onOk() {
-        try {
-          const updatedCategories = monthlyData.categories.filter(
-            (item) => item.id !== id
-          );
-
-          const res = await fetch(
-            `http://localhost:8080/monthlyCategories/${monthlyData.id}`,
-            {
-              method: "PATCH",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ categories: updatedCategories }),
-            }
-          );
-
-          if (!res.ok) throw new Error("Không thể xóa danh mục!");
-
-          setMonthlyData({ ...monthlyData, categories: updatedCategories });
-          await fetchMonthlyData(month.format("YYYY-MM"));
-          message.success("Đã xóa danh mục thành công!");
-        } catch {
-          message.error("Không thể xóa danh mục!");
-        }
-      },
-    });
-  };
+  
 
   const handleLogoutClick = () => setIsLogoutModalVisible(true);
   const handleConfirmLogout = () => {
@@ -388,14 +358,7 @@ const CategoryPage: React.FC = () => {
                           {(item.limit ?? 0).toLocaleString()} ₫
                         </div>
                       </div>
-                      <Button
-                        type="link"
-                        danger
-                        onClick={() => handleDelete(item.id)}
-                        style={{ padding: 0 }}
-                      >
-                        Xóa
-                      </Button>
+                      
                     </div>
                   );
                 })}
