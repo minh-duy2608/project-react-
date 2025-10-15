@@ -57,7 +57,7 @@ export default function UserRegisterPage() {
       login(mockToken, false);
       setIsSuccess(true);
       message.success("Register and login successful!");
-      navigate("/information");
+      navigate("/userLogin");
     } catch (error) {
       message.error("Failed to register. Please try again.");
       console.error("Registration error:", error);

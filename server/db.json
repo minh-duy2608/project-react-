@@ -8,6 +8,16 @@
       "id": 1,
       "username": "duy268",
       "password": "minhduy268"
+    },
+    {
+      "username": "duy267",
+      "password": "123456",
+      "id": 2
+    },
+    {
+      "username": "duy2686",
+      "password": "123456",
+      "id": 3
     }
   ],
   "profiles": [
@@ -19,6 +29,22 @@
       "gender": "Male",
       "budget": "",
       "status": "Active"
+    },
+    {
+      "id": 2,
+      "name": "duy267",
+      "email": "",
+      "phone": "",
+      "gender": "",
+      "budget": ""
+    },
+    {
+      "id": 3,
+      "name": "duy2686",
+      "email": "",
+      "phone": "",
+      "gender": "",
+      "budget": ""
     }
   ],
   "categories": [
@@ -75,6 +101,11 @@
       "month": "2025-02",
       "budget": 500000,
       "id": 2
+    },
+    {
+      "month": "2025-03",
+      "budget": 500000,
+      "id": 3
     }
   ],
   "monthlyCategories": [
@@ -178,19 +209,11 @@
       "monthlyCategoryId": 1759976518633
     },
     {
-      "id": 1760315410031,
-      "createdDate": "2025-10-13",
+      "id": 1760488754273,
+      "createdDate": "2025-10-15",
       "total": 10000,
-      "description": "đi ăn ",
-      "categoryId": 1,
-      "monthlyCategoryId": 1760283749264
-    },
-    {
-      "id": 1760322712997,
-      "createdDate": "2025-10-13",
-      "total": 10,
-      "description": "",
-      "categoryId": 3,
+      "description": "abcd",
+      "categoryId": 4,
       "monthlyCategoryId": 1760283749264
     }
   ]

@@ -151,9 +151,10 @@ export default function Dashboard() {
       },
       y: {
         beginAtZero: false,
-        grid: { color: "rgba(0, 0, 0, 0.05)", drawBorder: false },
+        grid: { color: "rgba(0, 0, 0, 0.05)" },
         ticks: {
-          callback: (value: number) => `$${value.toLocaleString()}`,
+          callback: (value: string | number) =>
+            `$${typeof value === "number" ? value.toLocaleString() : value}`,
           color: "#8B91A2",
           font: { size: 12 },
         },

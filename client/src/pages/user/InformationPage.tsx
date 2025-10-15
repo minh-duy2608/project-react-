@@ -148,6 +148,11 @@ const InformationPage: React.FC = () => {
       message.warning("Vui lòng nhập ngân sách!");
       return;
     }
+    // ✅ Ngăn nhập tiền âm hoặc 0
+    if (Number(monthlyBudget) <= 0) {
+      message.warning("Ngân sách phải lớn hơn 0!");
+      return;
+    }
 
     try {
       const res = await axios.get(
@@ -290,7 +295,6 @@ const InformationPage: React.FC = () => {
               📊 Quản Lý Tài Chính Cá Nhân
             </Title>
 
-            {/* --- Số tiền còn lại --- */}
             <div className="card money-card">
               <Text className="muted">💵 Số tiền còn lại</Text>
               <div className="big-green">
@@ -298,13 +302,12 @@ const InformationPage: React.FC = () => {
               </div>
             </div>
 
-            {/* --- Chọn tháng & ngân sách --- */}
             <div className="card month-card">
               <Text className="muted">📅 Chọn tháng:</Text>
               <DatePicker
                 picker="month"
                 style={{ width: 220 }}
-                onChange={(date, dateString) => setSelectedMonth(dateString)}
+                onChange={(date, dateString) => setSelectedMonth(Array.isArray(dateString) ? dateString[0] || "" : dateString)}
               />
             </div>
 
@@ -324,168 +327,9 @@ const InformationPage: React.FC = () => {
                 Lưu
               </Button>
             </div>
-
-            {/* --- Thông tin cá nhân --- */}
-            <div className="card user-card">
-              <Title level={4} className="section-title">
-                Quản Lý Thông tin cá nhân
-              </Title>
-
-              <Row gutter={[24, 16]}>
-                <Col span={12}>
-                  <Text strong className="label">
-                    Name <span className="required">*</span>
-                  </Text>
-                  <Input value={userInfo.name} disabled />
-                </Col>
-                <Col span={12}>
-                  <Text strong className="label">
-                    Email <span className="required">*</span>
-                  </Text>
-                  <Input value={userInfo.email} disabled />
-                </Col>
-                <Col span={12}>
-                  <Text strong className="label">
-                    Phone <span className="required">*</span>
-                  </Text>
-                  <Input value={userInfo.phone} disabled />
-                </Col>
-                <Col span={12}>
-                  <Text strong className="label">
-                    Gender <span className="required">*</span>
-                  </Text>
-                  <Input value={userInfo.gender} disabled />
-                </Col>
-              </Row>
-
-              <div className="action-row">
-                <Button
-                  className="purple-btn"
-                  onClick={() => setIsChangeInfoVisible(true)}
-                >
-                  Change Information
-                </Button>
-                <Button
-                  className="purple-btn"
-                  onClick={() => setIsChangePassVisible(true)}
-                >
-                  Change Password
-                </Button>
-              </div>
-            </div>
           </div>
         </section>
       </div>
-
-      {/* Modal chỉnh sửa thông tin */}
-      <Modal
-        title="Chỉnh sửa thông tin cá nhân"
-        open={isChangeInfoVisible}
-        onOk={handleSaveInfo}
-        onCancel={() => setIsChangeInfoVisible(false)}
-        okText="Lưu"
-        cancelText="Hủy"
-      >
-        <Form layout="vertical" form={formInfo}>
-          <Form.Item
-            label="Name"
-            name="name"
-            rules={[{ required: true, message: "Vui lòng nhập họ tên!" }]}
-          >
-            <Input placeholder="Họ và tên" />
-          </Form.Item>
-
-          <Form.Item
-            label="Email"
-            name="email"
-            rules={[
-              { required: true, message: "Vui lòng nhập email!" },
-              { type: "email", message: "Email không hợp lệ!" },
-            ]}
-          >
-            <Input placeholder="Email" />
-          </Form.Item>
-
-          <Form.Item
-            label="Phone"
-            name="phone"
-            rules={[{ required: true, message: "Vui lòng nhập số điện thoại!" }]}
-          >
-            <Input placeholder="Số điện thoại" />
-          </Form.Item>
-
-          <Form.Item
-            label="Gender"
-            name="gender"
-            rules={[{ required: true, message: "Vui lòng chọn giới tính!" }]}
-          >
-            <Select placeholder="Chọn giới tính">
-              <Option value="Male">Male</Option>
-              <Option value="Female">Female</Option>
-            </Select>
-          </Form.Item>
-        </Form>
-      </Modal>
-
-      {/* Modal đổi mật khẩu */}
-      <Modal
-        title="Đổi mật khẩu"
-        open={isChangePassVisible}
-        onOk={handleSavePassword}
-        onCancel={() => setIsChangePassVisible(false)}
-        okText="Lưu"
-        cancelText="Hủy"
-      >
-        <Form layout="vertical" form={formPass}>
-          <Form.Item
-            label="Mật khẩu cũ"
-            name="oldPassword"
-            rules={[{ required: true, message: "Vui lòng nhập mật khẩu cũ!" }]}
-          >
-            <Input.Password />
-          </Form.Item>
-
-          <Form.Item
-            label="Mật khẩu mới"
-            name="newPassword"
-            rules={[{ required: true, message: "Vui lòng nhập mật khẩu mới!" }]}
-          >
-            <Input.Password />
-          </Form.Item>
-
-          <Form.Item
-            label="Xác nhận mật khẩu"
-            name="confirmPassword"
-            dependencies={["newPassword"]}
-            rules={[
-              { required: true, message: "Vui lòng xác nhận mật khẩu!" },
-              ({ getFieldValue }) => ({
-                validator(_, value) {
-                  if (!value || getFieldValue("newPassword") === value)
-                    return Promise.resolve();
-                  return Promise.reject(
-                    new Error("Mật khẩu xác nhận không trùng khớp!")
-                  );
-                },
-              }),
-            ]}
-          >
-            <Input.Password />
-          </Form.Item>
-        </Form>
-      </Modal>
-
-      {/* Modal xác nhận đăng xuất */}
-      <Modal
-        title="Xác nhận đăng xuất"
-        open={isLogoutModalVisible}
-        onOk={handleConfirmLogout}
-        onCancel={handleCancelLogout}
-        okText="Đăng xuất"
-        cancelText="Hủy"
-      >
-        <p>Bạn có chắc chắn muốn đăng xuất không?</p>
-      </Modal>
     </div>
   );
 };

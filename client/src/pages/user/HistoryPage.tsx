@@ -44,7 +44,6 @@ const HistoryPage: React.FC = () => {
   const [warningMessage, setWarningMessage] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // ✅ Phân trang logic (client-side)
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
@@ -99,6 +98,7 @@ const HistoryPage: React.FC = () => {
         `http://localhost:8080/transactions?monthlyCategoryId=${monthlyCategoryId}`
       );
 
+      // ✅ Sửa đúng chỗ này để lấy id thật của transaction
       const allData = monthlyCategory.categories.map((catItem: any) => {
         const categoryInfo = categories.find(
           (c) => c.id === catItem.categoryId
@@ -107,7 +107,7 @@ const HistoryPage: React.FC = () => {
           (t: any) => t.categoryId === catItem.categoryId
         );
         return {
-          id: catItem.id,
+          id: transaction ? transaction.id : null, // ✅ id thật trong db.json
           categoryId: catItem.categoryId,
           categoryName: categoryInfo ? categoryInfo.name : "Không xác định",
           total: transaction ? transaction.total : 0,
@@ -236,53 +236,62 @@ const HistoryPage: React.FC = () => {
     }
   };
 
-  const handleDelete = async (id: number) => {
-    try {
-      await axios.delete(`http://localhost:8080/transactions/${id}`);
-      message.success("Đã xóa giao dịch!");
-      fetchBudgetAndTransactions(dayjs(month).format("MM/YYYY"));
-    } catch {
-      message.error("Không thể xóa giao dịch!");
-    }
-  };
+  // ✅ Fix xóa
+  // ✅ Sửa lại hàm xóa
+const handleDelete = async (id: number | null) => {
+  if (!id) {
+    message.warning("Không có giao dịch để xóa!");
+    return;
+  }
 
-  const columns = [
-    {
-      title: "STT",
-      dataIndex: "index",
-      render: (_: any, __: any, index: number) =>
-        (currentPage - 1) * itemsPerPage + index + 1,
-    },
-    {
-      title: "Category",
-      dataIndex: "categoryName",
-    },
-    {
-      title: "Budget",
-      dataIndex: "total",
-      render: (v: any) => `${v.toLocaleString()} VND`,
-    },
-    {
-      title: "Note",
-      dataIndex: "description",
-      render: (text: string) => text || "—",
-    },
-    {
-      title: "Actions",
-      render: (record: any) => (
-        <Popconfirm
-          title="Bạn có chắc muốn xóa?"
-          onConfirm={() => handleDelete(record.id)}
-          okText="Xóa"
-          cancelText="Hủy"
-        >
-          <DeleteOutlined style={{ color: "red", cursor: "pointer" }} />
-        </Popconfirm>
-      ),
-    },
-  ];
+  try {
+    await axios.delete(`http://localhost:8080/transactions/${id}`);
+    message.success("Đã xóa giao dịch!");
+    fetchBudgetAndTransactions(dayjs(month).format("MM/YYYY"));
+  } catch (error) {
+    console.error(error);
+    message.error("Không thể xóa giao dịch!");
+  }
+};
 
-  // ✅ Chỉ xử lý dữ liệu bằng logic
+// ✅ Sửa lại phần columns
+const columns = [
+  {
+    title: "STT",
+    dataIndex: "index",
+    render: (_: any, __: any, index: number) =>
+      (currentPage - 1) * itemsPerPage + index + 1,
+  },
+  {
+    title: "Category",
+    dataIndex: "categoryName",
+  },
+  {
+    title: "Budget",
+    dataIndex: "total",
+    render: (v: any) => `${v.toLocaleString()} VND`,
+  },
+  {
+    title: "Note",
+    dataIndex: "description",
+    render: (text: string) => text || "—",
+  },
+  {
+    title: "Actions",
+    render: (record: any) => (
+      <Popconfirm
+        title="Bạn có chắc muốn xóa?"
+        onConfirm={() => handleDelete(record.id ?? null)}
+        okText="Xóa"
+        cancelText="Hủy"
+      >
+        <DeleteOutlined style={{ color: "red", cursor: "pointer" }} />
+      </Popconfirm>
+    ),
+  },
+];
+
+
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedData = filteredTransactions.slice(
     startIndex,
@@ -291,7 +300,7 @@ const HistoryPage: React.FC = () => {
 
   return (
     <div className="page-root">
-      {/* Giữ nguyên toàn bộ UI và CSS */}
+      {/* ✅ Giữ nguyên toàn bộ UI & CSS */}
       <header className="app-header">
         <div className="header-left">📒 Tài Chính Cá Nhân K24_Rikkei</div>
         <div
